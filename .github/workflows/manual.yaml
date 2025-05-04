@@ -114,9 +114,7 @@ jobs:
     env: {}
 
     steps:
-      - uses: actions/checkout@v4.2.2
-
       - name: Message
         shell: bash
         run: |-
-          echo "Not yet implemented"
+          echo "::warning::Not yet implemented"

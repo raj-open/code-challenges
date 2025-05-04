@@ -61,4 +61,4 @@ jobs:
       - name: Message
         shell: bash
         run: |-
-          echo "Not yet implemented"
+          echo "::warning::Not yet implemented"
