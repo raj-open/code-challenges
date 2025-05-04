@@ -24,4 +24,12 @@ mod tests {
         let result = approach::run(1, 100, 1000);
         assert_eq!(result, 50);
     }
+
+    /// NOTE: This approach is inefficient and therefore skipped.
+    #[test]
+    #[ignore]
+    fn test_case_heavy_1() {
+        let result = approach::run(991, 11495481, 112259);
+        assert_eq!(result, 224515);
+    }
 }

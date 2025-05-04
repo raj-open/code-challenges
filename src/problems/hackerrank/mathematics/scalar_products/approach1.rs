@@ -43,24 +43,24 @@ fn main() {
 }
 
 pub fn run(c: i32, m: i32, n: usize) -> usize {
-    let vecs = SeqPair::new(m, 0, c)
+    let vecs = SeqPair::new(m as i64, 0, c as i64)
         .into_iter()
         .map(|s| (s.current, s.next))
         .skip(2)
         .step_by(2)
         .take(n);
 
-    let mut values: HashSet<i32> = HashSet::new();
+    let mut values: HashSet<i64> = HashSet::new();
 
     for (k, u) in vecs.enumerate() {
-        let vecs2 = SeqPair::new(m, u.0, u.1)
+        let vecs2 = SeqPair::new(m as i64, u.0, u.1)
             .into_iter()
             .map(|s| (s.current, s.next))
             .skip(2)
             .step_by(2)
             .take(n - (k + 1));
         for v in vecs2 {
-            let ip = (u.0 * v.0 + u.1 * v.1).rem_euclid(m);
+            let ip = (u.0 * v.0 + u.1 * v.1).rem_euclid(m as i64);
             values.insert(ip);
         }
     }
@@ -74,9 +74,9 @@ pub fn run(c: i32, m: i32, n: usize) -> usize {
 /// ----------------------------------------------------------------
 #[derive(Clone, Debug)]
 struct SeqPair {
-    modulus: i32,
-    current: i32,
-    next: i32,
+    modulus: i64,
+    current: i64,
+    next: i64,
 }
 
 trait EntityIterable {
@@ -93,7 +93,7 @@ where
 }
 
 impl SeqPair {
-    fn new(modulus: i32, x: i32, y: i32) -> Self {
+    fn new(modulus: i64, x: i64, y: i64) -> Self {
         Self { modulus, current: x, next: y }
     }
 }
