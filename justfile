@@ -119,6 +119,7 @@ build-requirements:
 build-requirements-basic:
     @# cargo update --verbose --offline
     @# cargo install --locked cargo-zigbuild
+    @cargo install --locked cargo-zigbuild
     @{{PYVENV_ON}} && {{PYVENV}} -m pip install --upgrade pip
     @{{PYVENV_ON}} && {{PYVENV}} -m pip install ruff uv
 
@@ -269,11 +270,14 @@ watch-logs-all n="10":
 
 check-system:
     @echo "Operating System detected:  {{os_family()}}"
+    @echo "Cargo command:              $( cargo --version )"
+    @echo "Rustc command:              $( rustc --version )"
     @echo "Python command used:        ${PYTHON_PATH}"
     @echo "Python command for venv:    {{PYVENV}}"
     @echo "Python path for venv:       $( {{PYVENV_ON}} && which {{PYVENV}} )"
+    @echo "Cargo Zigbuild:             $( cargo-zigbuild --version )"
 
 check-system-requirements:
     @just _check-tool "cargo" "cargo"
     @just _check-tool "cargo fmt" "cargo fmt"
-    @just _check-tool "zig" "zig"
+    @just _check-tool "cargo-zigbuild" "cargo-zigbuild"
