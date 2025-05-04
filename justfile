@@ -215,6 +215,7 @@ clean-basic log_path="logs":
     @- just _clean-all-files "." ".DS_Store" 2> /dev/null
     @echo "All build artefacts will be force removed."
     @cargo clean
+    @just_clean-all-files "." "*.rs.bk"
     @- rm -rf ".venv" 2> /dev/null
     @- rm -rf "target" 2> /dev/null
 
