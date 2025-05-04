@@ -1,0 +1,56 @@
+# Code Challenges #
+
+This repository contains code snippets written entirely by the repository's owner / author,
+as solutions to problems on various platforms.
+
+We work here primarily with
+
+- Rust
+- python
+
+## System requirements ##
+
+- [bash](https://gitforwindows.org)
+- [justfile tool](https://github.com/casey/just?tab=readme-ov-file#installation)
+- [rust](https://www.rust-lang.org) incl. cargo
+- python@v3.11+
+
+## Setup ##
+
+Run
+
+```bash
+# only needed once
+just setup
+# now modify the created .env file
+
+# only needed when code changes
+just build
+```
+
+## Testing ##
+
+### Unit tests ###
+
+Unit tests for rust code accompany files in the same (sub)modules
+e.g. `src/path/to/file.rs` has unit test `src/path/to/tests_file.rs`.
+To run a unit test for a single file, call
+
+```bash
+just test-unit "path/to/file.rs"
+# or
+just test-unit "path/to/tests_file.rs"
+```
+
+Both options will run just the tests in the `test_`-file.
+
+To run all unit tests throughout the repository, call
+
+```bash
+just tests-unit
+```
+
+### Integration tests ###
+
+The `tests` folder contains integration tests for rust code,
+and unit tests for python code.
