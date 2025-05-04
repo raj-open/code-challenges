@@ -3,3 +3,9 @@
 
 pub mod approach1;
 pub mod approach2;
+
+#[cfg(test)]
+pub mod tests_approach1;
+
+#[cfg(test)]
+pub mod tests_approach2;
