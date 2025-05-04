@@ -1,18 +1,24 @@
+reorder_imports = false
 combine_control_expr = false
-comment_width = 80
 condense_wildcard_suffixes = false
 disable_all_formatting = false
+
 fn_args_layout = "Block" # "Visual", "Block"
-fn_call_width = 60
 fn_single_line = false
+
 hard_tabs = false
-max_width = 100
 newline_style = "Unix"
-normalize_comments = false
-struct_lit_width = 40
 trailing_comma = "Vertical"
-reorder_imports = false
-force_explicit_abi = true
+
 format_strings = false
-wrap_comments = false
+force_explicit_abi = true
+
+struct_lit_width = 40
+fn_call_width = 60
+max_width = 100
+comment_width = 200
+normalize_comments = false
+doc_comment_width = 200
 normalize_doc_attributes = false
+wrap_comments = false
+wrap_doc_comments = false
