@@ -302,10 +302,7 @@ where
 /// as a vector of strings.
 #[allow(unused)]
 fn read_input(stream: &Stdin) -> Vec<String> {
-    stream.lock()
-        .lines()
-        .filter_map(Result::ok)
-        .collect()
+    stream.lock().lines().filter_map(Result::ok).collect()
 }
 
 #[allow(unused)]
