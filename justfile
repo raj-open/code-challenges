@@ -120,7 +120,7 @@ build-requirements-basic:
     @rustup default stable
     @cargo update --verbose
     @cargo install --locked --force cargo-zigbuild
-    @cargo install --locked --force rustfmt
+    @# cargo install --locked --force rustfmt
     @{{PYVENV_ON}} && {{PYVENV}} -m pip install --upgrade pip
     @{{PYVENV_ON}} && {{PYVENV}} -m pip install ruff uv
 
@@ -280,5 +280,5 @@ check-system:
 
 check-system-requirements:
     @just _check-tool "cargo" "cargo"
-    @just _check-tool "cargo fmt" "cargo fmt"
+    @# just _check-tool "cargo fmt" "cargo fmt"
     @just _check-tool "cargo-zigbuild" "cargo-zigbuild"

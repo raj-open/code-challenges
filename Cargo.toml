@@ -57,8 +57,8 @@ dedent = {version="^0.1.1"}
 [dev-dependencies]
 cargo-zigbuild = {version = "^0.20.0"}
 rstest = {version = "^0.25.0"}
-rustfmt = {version = "^0.10.0", features = []}
-# FIXME: these require blake3, which fail to build on unix
+# FIXME: currently fail to build on unix
+# rustfmt = {version = "^0.10.0", features = []}
 # just = {version = "^1.40.0"}
 
 [[bin]]

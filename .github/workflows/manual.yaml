@@ -91,7 +91,9 @@ jobs:
 
           just build
 
+      # NOTE: rustfmt is currenlty broken
       - name:  STEP 2 - check linting
+        if: false
         shell: bash
         run: |-
           just prettify
