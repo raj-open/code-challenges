@@ -21,6 +21,8 @@ permissions:
 
 env:
   PYTHON_VERSION: "3.13"
+  # ARCHITECTURE: "x86_64-unknown-linux-gnu"
+  ARCHITECTURE: "x86_64-unknown-linux-musl"
 
 jobs:
   deploy:
@@ -31,6 +33,24 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4.2.2
+
+      - name: Action - install justfile tool
+        uses: extractions/setup-just@v3
+        with:
+          just-version: "1.25.2"
+
+      - name: Action - install zig
+        uses: goto-bus-stop/setup-zig@v2.2.1
+        with:
+          version: "0.12.0"
+
+      - name: Action - install rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1.12.0
+
+      - name: Action - install Python
+        uses: actions/setup-python@v5.6.0
+        with:
+          python-version: "${{ env.PYTHON_VERSION }}"
 
       - name: Message
         shell: bash

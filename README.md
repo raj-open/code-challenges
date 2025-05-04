@@ -15,6 +15,27 @@ We work here primarily with
 - [rust](https://www.rust-lang.org) incl. cargo
 - python@v3.11+
 
+> [!IMPORTANT]
+> We rely on [Zig](https://ziglang.org) for cross-compilation,
+> which avoids gcc-compiler issues on local machine and linux images,
+> which in turn are required by the rust compiler.
+
+> [!TIP]
+> To verify, open a bash terminal and call.
+>
+> ```bash
+> just --version
+> # rust
+> rustup --version
+> rustc --version
+> cargo --version
+> # python
+> . .venv/bin/activate && python3 --version # for unix
+> . .venv/Scripts/activate && python --version # for windows
+> # zig
+> zig version
+> ```
+
 ## Setup ##
 
 Run

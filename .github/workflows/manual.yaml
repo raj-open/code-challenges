@@ -27,6 +27,8 @@ permissions:
 
 env:
   PYTHON_VERSION: "3.13"
+  # ARCHITECTURE: "x86_64-unknown-linux-gnu"
+  ARCHITECTURE: "x86_64-unknown-linux-musl"
 
 jobs:
   qa:
@@ -44,25 +46,43 @@ jobs:
         with:
           just-version: "1.25.2"
 
+      - name: Action - install zig
+        uses: goto-bus-stop/setup-zig@v2.2.1
+        with:
+          version: "0.12.0"
+
+      - name: Action - install rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1.12.0
+
       - name: Action - install Python
         uses: actions/setup-python@v5.6.0
         with:
           python-version: "${{ env.PYTHON_VERSION }}"
 
-      - name: Action - install Rust
-        uses: actions-rust-lang/setup-rust-toolchain@v1.12.0
-
       - name: Setup - ping basic tools and perform pre-installation
         shell: bash
         run: |-
           just --version
+          zig version
+          rustup --version
+          rustc --version
+          cargo --version
           python3 --version
           python3 -m pip install --upgrade pip wheel
-          just setup
 
       - name: STEP 1 - build code
         shell: bash
         run: |-
+          just setup
+
+          touch .env && rm .env
+          echo "
+          MAIN_MODULE="code-challenges"
+          PYTHON_PATH="python${{ env.PYTHON_VERSION }}"
+          ARCHITECTURE="${{ env.ARCHITECTURE }}"
+          RUST_BACKTRACE=full
+          " > .env
+
           just build
 
       - name:  STEP 2 - check linting
