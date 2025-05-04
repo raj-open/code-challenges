@@ -139,10 +139,10 @@ build-compile module="${MAIN_MODULE}":
 # TARGETS: execution
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-run-py module="main" *args:
+run-py module="main" *args="":
     @{{PYVENV_ON}} && {{PYVENV}} src-py.{{module}} {{args}}
 
-run-rust module="${MAIN_MODULE}" *args:
+run-rust module="${MAIN_MODULE}" *args="":
     @just build-compile "{{module}}"
     @# "./target/release/{{module}}" {{args}}
     @cargo run --bin "{{module}}"
