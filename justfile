@@ -276,4 +276,4 @@ check-system:
 check-system-requirements:
     @just _check-tool "cargo" "cargo"
     @just _check-tool "cargo fmt" "cargo fmt"
-    @just _check-tool "cargo-zigbuild" "cargo-zigbuild"
+    @just _check-tool "zig" "zig"
