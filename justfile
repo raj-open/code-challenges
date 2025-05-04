@@ -117,8 +117,7 @@ build-requirements:
     @just build-requirements-dependencies
 
 build-requirements-basic:
-    @# cargo update --verbose --offline
-    @# cargo install --locked cargo-zigbuild
+    @cargo update --verbose
     @cargo install --locked cargo-zigbuild
     @{{PYVENV_ON}} && {{PYVENV}} -m pip install --upgrade pip
     @{{PYVENV_ON}} && {{PYVENV}} -m pip install ruff uv
