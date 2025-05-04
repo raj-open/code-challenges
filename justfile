@@ -117,8 +117,10 @@ build-requirements:
     @just build-requirements-dependencies
 
 build-requirements-basic:
-    @# cargo update --verbose --offline
-    @# cargo install --locked cargo-zigbuild
+    @rustup default stable
+    @cargo update --verbose
+    @cargo install --locked --force cargo-zigbuild
+    @# cargo install --locked --force rustfmt
     @{{PYVENV_ON}} && {{PYVENV}} -m pip install --upgrade pip
     @{{PYVENV_ON}} && {{PYVENV}} -m pip install ruff uv
 
@@ -139,10 +141,10 @@ build-compile module="${MAIN_MODULE}":
 # TARGETS: execution
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-run-py module="main" *args:
+run-py module="main" *args="":
     @{{PYVENV_ON}} && {{PYVENV}} src-py.{{module}} {{args}}
 
-run-rust module="${MAIN_MODULE}" *args:
+run-rust module="${MAIN_MODULE}" *args="":
     @just build-compile "{{module}}"
     @# "./target/release/{{module}}" {{args}}
     @cargo run --bin "{{module}}"
@@ -269,11 +271,14 @@ watch-logs-all n="10":
 
 check-system:
     @echo "Operating System detected:  {{os_family()}}"
+    @echo "Cargo command:              $( cargo --version )"
+    @echo "Rustc command:              $( rustc --version )"
     @echo "Python command used:        ${PYTHON_PATH}"
     @echo "Python command for venv:    {{PYVENV}}"
     @echo "Python path for venv:       $( {{PYVENV_ON}} && which {{PYVENV}} )"
+    @echo "Cargo Zigbuild:             $( cargo-zigbuild --version )"
 
 check-system-requirements:
     @just _check-tool "cargo" "cargo"
-    @just _check-tool "cargo fmt" "cargo fmt"
+    @# just _check-tool "cargo fmt" "cargo fmt"
     @just _check-tool "cargo-zigbuild" "cargo-zigbuild"

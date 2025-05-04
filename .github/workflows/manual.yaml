@@ -1,0 +1,119 @@
+name: QA [+ CD] (manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      docker-image:
+        description: Choice of docker image on which to run action.
+        default: ubuntu-latest
+        type: choice
+        options:
+          - ubuntu-latest
+
+      deploy:
+        description: 'Deploy code?'
+        type: boolean
+        default: false
+
+      environment:
+        description: 'Choice of environment for pipeline'
+        # NOTE: this option provides dropdown list of choices of environments set on GitHub (enterprise only)
+        type: environment
+        required: true
+        default: 'local'
+
+permissions:
+  contents: read
+
+env:
+  PYTHON_VERSION: "3.13"
+  # ARCHITECTURE: "x86_64-unknown-linux-gnu"
+  ARCHITECTURE: "x86_64-unknown-linux-musl"
+
+jobs:
+  qa:
+    name: QA
+    # runs-on: [self-hosted, "${{ github.event.inputs.os }}", x64, gpu]
+    runs-on: ${{ github.event.inputs.docker-image }}
+    environment: "${{ github.event.inputs.environment }}"
+    env: {}
+
+    steps:
+      - uses: actions/checkout@v4.2.2
+
+      - name: Action - install justfile tool
+        uses: extractions/setup-just@v3
+        with:
+          just-version: "1.25.2"
+
+      - name: Action - install zig
+        uses: goto-bus-stop/setup-zig@v2.2.1
+        with:
+          version: "0.12.0"
+
+      # - name: Action - install rust
+      #   uses: actions-rust-lang/setup-rust-toolchain@v1.12.0
+
+      - name: Action - install rust and set to stable
+        uses: actions-rs/toolchain@v1.0.6
+        with:
+          toolchain: stable
+          override: true
+
+      - name: Action - install Python
+        uses: actions/setup-python@v5.6.0
+        with:
+          python-version: "${{ env.PYTHON_VERSION }}"
+
+      - name: Setup - ping basic tools and perform pre-installation
+        shell: bash
+        run: |-
+          just --version
+          zig version
+          rustup --version
+          rustc --version
+          cargo --version
+          python3 --version
+          python3 -m pip install --upgrade pip wheel
+
+      - name: STEP 1 - build code
+        shell: bash
+        run: |-
+          just setup
+
+          touch .env && rm .env
+          echo "
+          MAIN_MODULE="code-challenges"
+          PYTHON_PATH="python${{ env.PYTHON_VERSION }}"
+          ARCHITECTURE="${{ env.ARCHITECTURE }}"
+          RUST_BACKTRACE=full
+          " > .env
+
+          just build
+
+      # NOTE: rustfmt is currenlty broken
+      - name:  STEP 2 - check linting
+        if: false
+        shell: bash
+        run: |-
+          just prettify
+
+      - name:  STEP 3 - run unit tests
+        shell: bash
+        run: |-
+          just tests-unit
+
+  # only performed if qa passes and option set
+  deploy:
+    name: DEPLOY
+    runs-on: ${{ github.event.inputs.docker-image }}
+    environment: "${{ github.event.inputs.environment }}"
+    env: {}
+
+    steps:
+      - uses: actions/checkout@v4.2.2
+
+      - name: Message
+        shell: bash
+        run: |-
+          echo "Not yet implemented"

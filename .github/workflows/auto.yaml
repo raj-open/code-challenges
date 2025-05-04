@@ -1,0 +1,106 @@
+name: QA (automatic)
+
+on:
+  pull_request:
+    branches:
+      - main
+      - staging
+      - develop
+      - release
+      - 'dev-*'
+      - 'bugfix-*'
+      - 'hotfix-*'
+      - 'feat-*'
+      - 'feature-*'
+      - 'story-*'
+
+    paths:
+      - '**/*'
+
+    # see <https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#discussion>
+    types:
+      - opened
+      - edited
+      - reopened
+      - ready_for_review
+      - unlocked
+
+permissions:
+  contents: read
+
+env:
+  PYTHON_VERSION: "3.13"
+  # ARCHITECTURE: "x86_64-unknown-linux-gnu"
+  ARCHITECTURE: "x86_64-unknown-linux-musl"
+
+jobs:
+  qa:
+    name: QA
+    runs-on: "ubuntu-latest"
+    environment: "local"
+    env: {}
+
+    steps:
+      - uses: actions/checkout@v4.2.2
+
+      - name: Action - install justfile tool
+        uses: extractions/setup-just@v3
+        with:
+          just-version: "1.25.2"
+
+      - name: Action - install zig
+        uses: goto-bus-stop/setup-zig@v2.2.1
+        with:
+          version: "0.12.0"
+
+      # - name: Action - install rust
+      #   uses: actions-rust-lang/setup-rust-toolchain@v1.12.0
+
+      - name: Action - install rust and set to stable
+        uses: actions-rs/toolchain@v1.0.6
+        with:
+          toolchain: stable
+          override: true
+
+      - name: Action - install Python
+        uses: actions/setup-python@v5.6.0
+        with:
+          python-version: "${{ env.PYTHON_VERSION }}"
+
+      - name: Setup - ping basic tools and perform pre-installation
+        shell: bash
+        run: |-
+          just --version
+          zig version
+          rustup --version
+          rustc --version
+          cargo --version
+          python3 --version
+          python3 -m pip install --upgrade pip wheel
+
+      - name: STEP 1 - build code
+        shell: bash
+        run: |-
+          just setup
+
+          touch .env && rm .env
+          echo "
+          MAIN_MODULE="code-challenges"
+          PYTHON_PATH="python${{ env.PYTHON_VERSION }}"
+          ARCHITECTURE="${{ env.ARCHITECTURE }}"
+          RUST_BACKTRACE=full
+          " > .env
+
+          just build
+
+      # NOTE: rustfmt is currenlty broken
+      - name:  STEP 2 - check linting
+        if: false
+        shell: bash
+        run: |-
+          just prettify
+
+      - name:  STEP 3 - run unit tests
+        shell: bash
+        run: |-
+          just tests-unit

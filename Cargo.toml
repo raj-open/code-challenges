@@ -1,8 +1,8 @@
-cargo-features = ["profile-rustflags"]
+# cargo-features = ["profile-rustflags"]
 
 [package]
 name = "code_challenges"
-version = "0.0.0"
+version = "0.1.0"
 edition = "2024"
 description = "Code for challenges from various platforms"
 rust-version = "1.86"
@@ -27,39 +27,39 @@ members = [
 # CXX = "zig c++"
 
 [profile.release]
-rustflags = [
-    "-A", "unused_imports",
-    "-A", "dead_code",
-    "-C", "link-arg=-undefined",
-    "-C", "link-arg=dynamic_lookup",
-]
+# rustflags = [
+#     "-A", "unused_imports",
+#     "-A", "dead_code",
+#     "-C", "link-arg=-undefined",
+#     "-C", "link-arg=dynamic_lookup",
+# ]
 debug = true
 strip = false
 
 [profile.dev]
-rustflags = [
-    "-A", "unused_imports",
-    "-A", "dead_code",
-]
+# rustflags = [
+#     "-A", "unused_imports",
+#     "-A", "dead_code",
+# ]
 
 [profile.test]
-rustflags = [
-    "-A", "unused_imports",
-    "-A", "dead_code",
-]
+# rustflags = [
+#     "-A", "unused_imports",
+#     "-A", "dead_code",
+# ]
 
 [dependencies]
 serde = {version = "^1.0.219", features = ["derive"]}
 serde_json = {version = "^1.0.140"}
 dict_derive = {version = "^0.6.0" }
+dedent = {version="^0.1.1"}
 
 [dev-dependencies]
 cargo-zigbuild = {version = "^0.20.0"}
 rstest = {version = "^0.25.0"}
-# FIXME: these require blake3, which fail to build on unix
-# rustfmt = {version = "^0.10.0"}
+# FIXME: currently fail to build on unix
+# rustfmt = {version = "^0.10.0", features = []}
 # just = {version = "^1.40.0"}
-# blake3 = {version = "^1.8.2", default-features = false}
 
 [[bin]]
 name = "code-challenges"
