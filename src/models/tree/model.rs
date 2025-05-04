@@ -1,16 +1,17 @@
 /// ----------------------------------------------------------------
 /// IMPORTS
 /// ----------------------------------------------------------------
-use std::vec;
 
+use std::vec;
 use super::base::GenericTree;
-use super::base::GenericTreeLike;
 use super::base::GenericTreeOrRoot;
+use super::base::GenericTreeLike;
 
 /// ----------------------------------------------------------------
 /// BASIC IMPLEMENTATION FOR GenericTree
 /// ----------------------------------------------------------------
 
+/// Implementation of a tree
 #[allow(unused)]
 impl<T> GenericTree<T>
 where
@@ -65,10 +66,7 @@ where
     fn add(&mut self, other: GenericTreeOrRoot<T>) {
         match other {
             GenericTreeOrRoot::Root(u) => {
-                let t = GenericTree {
-                    root: u,
-                    children: vec![],
-                };
+                let t = GenericTree { root: u, children: vec![] };
                 self.children.push(t);
             }
             GenericTreeOrRoot::Tree(t) => {

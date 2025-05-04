@@ -1,5 +1,3 @@
-use core::iter::IntoIterator;
-use core::iter::Iterator;
 /// # First approach #
 ///
 /// This approach is not mathematically optimised,
@@ -10,6 +8,9 @@ use core::iter::Iterator;
 /// ----------------------------------------------------------------
 /// IMPORTS
 /// ----------------------------------------------------------------
+
+use core::iter::IntoIterator;
+use core::iter::Iterator;
 // use core::convert::TryFrom;
 use std::collections::HashSet;
 use std::fmt::Debug;
@@ -22,6 +23,7 @@ use std::str::FromStr;
 /// MAIN
 /// ----------------------------------------------------------------
 
+/// entry point when used as a script
 #[allow(unused)]
 fn main() {
     let line = read_input();
@@ -68,7 +70,6 @@ pub fn run(c: i32, m: i32, n: usize) -> usize {
 /// ----------------------------------------------------------------
 /// SECONDARY
 /// ----------------------------------------------------------------
-
 #[derive(Clone, Debug)]
 struct SeqPair {
     modulus: i32,
@@ -91,11 +92,7 @@ where
 
 impl SeqPair {
     fn new(modulus: i32, x: i32, y: i32) -> Self {
-        Self {
-            modulus,
-            current: x,
-            next: y,
-        }
+        Self { modulus, current: x, next: y }
     }
 }
 
@@ -134,18 +131,14 @@ impl IntoIterator for SeqPair {
     type Item = SeqPair;
     type IntoIter = EntityIterator<SeqPair>;
 
-    fn into_iter(self) -> EntityIterator<SeqPair> {
-        EntityIterator {
-            index: 0,
-            entity: self.clone(),
-        }
+    fn into_iter(self) -> Self::IntoIter {
+        return EntityIterator { index: 0, entity: self.clone() };
     }
 }
 
 /// ----------------------------------------------------------------
 /// AUXILIARY
 /// ----------------------------------------------------------------
-
 #[allow(unused)]
 fn read_input() -> String {
     let stdin = io::stdin();

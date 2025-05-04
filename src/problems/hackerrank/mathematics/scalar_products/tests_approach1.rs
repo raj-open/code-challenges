@@ -1,12 +1,14 @@
 /// ----------------------------------------------------------------
 /// IMPORTS
 /// ----------------------------------------------------------------
-use crate::problems::hackerrank::mathematics::scalar_products::approach1 as approach;
+
+use super::approach1 as approach;
 
 /// ----------------------------------------------------------------
 /// TESTS
 /// ----------------------------------------------------------------
 
+/// bundle of tests
 #[cfg(test)]
 mod tests {
     use super::*;

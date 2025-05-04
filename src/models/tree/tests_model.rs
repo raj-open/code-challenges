@@ -53,8 +53,7 @@ mod tests {
             ├─── alice: 23
             ╰─── bob: 24
         "#
-        )
-        .to_string();
+        ).to_string();
         assert_eq!(t.to_string(), expected);
     }
 
@@ -78,10 +77,7 @@ mod tests {
             name: Some("bird".to_string()),
             value: Some(2),
         };
-        let pet1b = DummyNode {
-            name: None,
-            value: Some(3),
-        };
+        let pet1b = DummyNode { name: None, value: Some(3) };
         child1.add(GenericTreeOrRoot::Root(pet1a));
         child1.add(GenericTreeOrRoot::Root(pet1b));
         let child2 = DummyNode {
@@ -98,16 +94,16 @@ mod tests {
             │  ╰─── _: 3
             ╰─── bob: 24
         "#
-        )
-        .to_string();
+        ).to_string();
         assert_eq!(t.to_string(), expected);
     }
 }
 
-// ----------------------------------------------------------------
-// AUXILIARY
-// ----------------------------------------------------------------
+/// ----------------------------------------------------------------
+/// AUXILIARY
+/// ----------------------------------------------------------------
 
+/// A dummy node type for test purposes
 #[derive(Clone)]
 struct DummyNode {
     name: Option<String>,
@@ -117,13 +113,9 @@ struct DummyNode {
 impl ToString for DummyNode {
     fn to_string(&self) -> String {
         match (&self.name, &self.value) {
-            (Some(name), Some(value)) => {
-                format!("{}: {}", name, value)
-            }
+            (Some(name), Some(value)) => format!("{}: {}", name, value),
             (Some(name), None) => name.clone(),
-            (None, Some(value)) => {
-                format!("_: {}", value)
-            }
+            (None, Some(value)) => format!("_: {}", value),
             (None, None) => "-".to_string(),
         }
     }
