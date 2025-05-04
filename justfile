@@ -117,7 +117,6 @@ build-requirements:
     @just build-requirements-dependencies
 
 build-requirements-basic:
-    @rustup default stable
     @cargo update --verbose
     @cargo install --locked --force cargo-zigbuild
     @# cargo install --locked --force rustfmt
@@ -281,5 +280,5 @@ check-system:
 
 check-system-requirements:
     @just _check-tool "cargo" "cargo"
-    @just _check-tool "cargo fmt -- --force" "cargo fmt"
+    @# just _check-tool "cargo fmt -- --force" "cargo fmt"
     @just _check-tool "cargo-zigbuild" "cargo-zigbuild"

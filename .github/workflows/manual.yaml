@@ -106,6 +106,9 @@ jobs:
   # only performed if qa passes and option set
   deploy:
     name: DEPLOY
+    needs: 'qa'
+    # job only runs if deploy-checkbox is selected
+    if: ${{ github.event.inputs.deploy == 'true' }}
     runs-on: ${{ github.event.inputs.docker-image }}
     environment: "${{ github.event.inputs.environment }}"
     env: {}
