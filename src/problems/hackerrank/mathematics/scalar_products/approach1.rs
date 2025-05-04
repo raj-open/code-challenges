@@ -16,6 +16,7 @@ use std::collections::HashSet;
 use std::fmt::Debug;
 use std::io;
 use std::io::BufRead;
+use std::io::Stdin;
 use std::slice::Iter;
 use std::str::FromStr;
 
@@ -26,7 +27,8 @@ use std::str::FromStr;
 /// entry point when used as a script
 #[allow(unused)]
 fn main() {
-    let line = read_input();
+    let lines = read_input(&io::stdin());
+    let line = lines.iter().nth(0).unwrap();
 
     let args: Vec<String> = line.split(" ").map(|x| x.to_string()).collect();
     let mut args: Iter<'_, String> = args.iter();
@@ -139,12 +141,15 @@ impl IntoIterator for SeqPair {
 /// ----------------------------------------------------------------
 /// AUXILIARY
 /// ----------------------------------------------------------------
+
+/// Obtains input lines from stdin
+/// as a vector of strings.
 #[allow(unused)]
-fn read_input() -> String {
-    let stdin = io::stdin();
-    let mut input = stdin.lock().lines();
-    let line = input.next().unwrap().unwrap().trim().to_string();
-    return line;
+fn read_input(stream: &Stdin) -> Vec<String> {
+    stream.lock()
+        .lines()
+        .filter_map(Result::ok)
+        .collect()
 }
 
 #[allow(unused)]
