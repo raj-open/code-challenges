@@ -1,0 +1,70 @@
+cargo-features = ["profile-rustflags"]
+
+[package]
+name = "code_challenges"
+version = "0.0.0"
+edition = "2024"
+description = "Code for challenges from various platforms"
+rust-version = "1.86"
+authors = [
+    "raj-open <raj-open@users.noreply.github.com>",
+]
+
+# cf. https://doc.rust-lang.org/cargo/reference/manifest.html
+# [lib]
+# name = "code_challenges"
+# crate-type = ["lib"]
+
+[workspace]
+members = [
+    ".",
+]
+
+# [env]
+# NOTE: has no effect
+# PYO3_PYTHON = { value = "python3" }
+# CC = "zig cc"
+# CXX = "zig c++"
+
+[profile.release]
+rustflags = [
+    "-A", "unused_imports",
+    "-A", "dead_code",
+    "-C", "link-arg=-undefined",
+    "-C", "link-arg=dynamic_lookup",
+]
+debug = true
+strip = false
+
+[profile.dev]
+rustflags = [
+    "-A", "unused_imports",
+    "-A", "dead_code",
+]
+
+[profile.test]
+rustflags = [
+    "-A", "unused_imports",
+    "-A", "dead_code",
+]
+
+[dependencies]
+serde = {version = "^1.0.219", features = ["derive"]}
+serde_json = {version = "^1.0.140"}
+dict_derive = {version = "^0.6.0" }
+
+[dev-dependencies]
+cargo-zigbuild = {version = "^0.20.0"}
+rstest = {version = "^0.25.0"}
+# FIXME: these require blake3, which fail to build on unix
+# rustfmt = {version = "^0.10.0"}
+# just = {version = "^1.40.0"}
+# blake3 = {version = "^1.8.2", default-features = false}
+
+[[bin]]
+name = "code-challenges"
+path = "src/main.rs"
+
+[[bin]]
+name = "hackerrank_mathematics"
+path = "src/problems/hackerrank/mathematics/main.rs"
