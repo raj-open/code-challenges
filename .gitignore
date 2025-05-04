@@ -13,6 +13,9 @@
 !/Cargo.toml
 !/pyproject.toml
 !/*.lock
+!/.github
+!/.github/workflows
+!/.github/workflows/*.yaml
 
 # ----------------------------------------------------------------
 # PROJECT
