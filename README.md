@@ -1,3 +1,11 @@
+[![Rust version: 1.86.*](https://img.shields.io/badge/rust%20version-1.86.*-black)](https://www.rust-lang.org)
+
+[![qa manual:main](https://github.com/raj-open/code-challenges/actions/workflows/manual.yaml/badge.svg?branch=main)](https://github.com/raj-open/code-challenges/actions/workflows/manual.yaml)
+[![qa manual:staging](https://github.com/raj-open/code-challenges/actions/workflows/manual.yaml/badge.svg?branch=staging)](https://github.com/raj-open/code-challenges/actions/workflows/manual.yaml)
+
+[![qa auto:staging](https://github.com/raj-open/code-challenges/actions/workflows/auto.yaml/badge.svg?branch=staging)](https://github.com/raj-open/code-challenges/actions/workflows/auto.yaml)
+[![qa auto:current](https://github.com/raj-open/code-challenges/actions/workflows/auto.yaml/badge.svg)](https://github.com/raj-open/code-challenges/actions/workflows/auto.yaml)
+
 # Code Challenges #
 
 This repository contains code snippets written entirely by the repository's owner / author,
