@@ -117,8 +117,10 @@ build-requirements:
     @just build-requirements-dependencies
 
 build-requirements-basic:
+    @rustup default stable
     @cargo update --verbose
     @cargo install --locked cargo-zigbuild
+    @cargo install --locked rustfmt
     @{{PYVENV_ON}} && {{PYVENV}} -m pip install --upgrade pip
     @{{PYVENV_ON}} && {{PYVENV}} -m pip install ruff uv
 

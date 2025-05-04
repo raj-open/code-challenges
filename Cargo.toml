@@ -1,4 +1,4 @@
-cargo-features = ["profile-rustflags"]
+# cargo-features = ["profile-rustflags"]
 
 [package]
 name = "code_challenges"
@@ -27,26 +27,26 @@ members = [
 # CXX = "zig c++"
 
 [profile.release]
-rustflags = [
-    "-A", "unused_imports",
-    "-A", "dead_code",
-    "-C", "link-arg=-undefined",
-    "-C", "link-arg=dynamic_lookup",
-]
+# rustflags = [
+#     "-A", "unused_imports",
+#     "-A", "dead_code",
+#     "-C", "link-arg=-undefined",
+#     "-C", "link-arg=dynamic_lookup",
+# ]
 debug = true
 strip = false
 
 [profile.dev]
-rustflags = [
-    "-A", "unused_imports",
-    "-A", "dead_code",
-]
+# rustflags = [
+#     "-A", "unused_imports",
+#     "-A", "dead_code",
+# ]
 
 [profile.test]
-rustflags = [
-    "-A", "unused_imports",
-    "-A", "dead_code",
-]
+# rustflags = [
+#     "-A", "unused_imports",
+#     "-A", "dead_code",
+# ]
 
 [dependencies]
 serde = {version = "^1.0.219", features = ["derive"]}
@@ -57,10 +57,9 @@ dedent = {version="^0.1.1"}
 [dev-dependencies]
 cargo-zigbuild = {version = "^0.20.0"}
 rstest = {version = "^0.25.0"}
+rustfmt = {version = "^0.10.0", features = []}
 # FIXME: these require blake3, which fail to build on unix
-# rustfmt = {version = "^0.10.0"}
 # just = {version = "^1.40.0"}
-# blake3 = {version = "^1.8.2", default-features = false}
 
 [[bin]]
 name = "code-challenges"

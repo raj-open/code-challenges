@@ -3,7 +3,6 @@
 // ----------------------------------------------------------------
 
 use dedent::dedent;
-use std::vec;
 
 use super::base::GenericTree;
 use super::base::GenericTreeLike;
