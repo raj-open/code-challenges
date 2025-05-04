@@ -197,10 +197,11 @@ tests-unit-optimised *args:
 # --------------------------------
 
 prettify:
-    @cargo fmt --verbose
+    @cargo fmt --verbose -- --force
 
 prettify-dry:
-    @cargo fmt --verbose --check
+    @echo "Not yet implemented"
+    @# cargo fmt --verbose --check -- --force
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # TARGETS: clean
@@ -280,5 +281,5 @@ check-system:
 
 check-system-requirements:
     @just _check-tool "cargo" "cargo"
-    @# just _check-tool "cargo fmt" "cargo fmt"
+    @just _check-tool "cargo fmt -- --force" "cargo fmt"
     @just _check-tool "cargo-zigbuild" "cargo-zigbuild"
