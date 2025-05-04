@@ -1,0 +1,38 @@
+name: Deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      docker-image:
+        description: Choice of docker image on which to run action.
+        default: ubuntu-latest
+        type: choice
+        options:
+          - ubuntu-latest
+
+      environment:
+        description: 'Choice of environment for pipeline'
+        # NOTE: this option provides dropdown list of choices of environments set on GitHub (enterprise only)
+        type: environment
+        required: true
+
+permissions:
+  contents: read
+
+env:
+  PYTHON_VERSION: "3.13"
+
+jobs:
+  deploy:
+    name: DEPLOY
+    runs-on: ${{ github.event.inputs.docker-image }}
+    environment: "${{ github.event.inputs.environment }}"
+    env: {}
+
+    steps:
+      - uses: actions/checkout@v4.2.2
+
+      - name: Message
+        shell: bash
+        run: |-
+          echo "Not yet implemented"

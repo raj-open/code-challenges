@@ -1,0 +1,91 @@
+name: QA [+ CD] (manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      docker-image:
+        description: Choice of docker image on which to run action.
+        default: ubuntu-latest
+        type: choice
+        options:
+          - ubuntu-latest
+
+      deploy:
+        description: 'Deploy code?'
+        type: boolean
+        default: false
+
+      environment:
+        description: 'Choice of environment for pipeline'
+        # NOTE: this option provides dropdown list of choices of environments set on GitHub (enterprise only)
+        type: environment
+        required: true
+        default: 'local'
+
+permissions:
+  contents: read
+
+env:
+  PYTHON_VERSION: "3.13"
+
+jobs:
+  qa:
+    name: QA
+    # runs-on: [self-hosted, "${{ github.event.inputs.os }}", x64, gpu]
+    runs-on: ${{ github.event.inputs.docker-image }}
+    environment: "${{ github.event.inputs.environment }}"
+    env: {}
+
+    steps:
+      - uses: actions/checkout@v4.2.2
+
+      - name: Action - install justfile tool
+        uses: extractions/setup-just@v3
+        with:
+          just-version: "1.25.2"
+
+      - name: Action - install Python
+        uses: actions/setup-python@v5.6.0
+        with:
+          python-version: "${{ env.PYTHON_VERSION }}"
+
+      - name: Action - install Rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1.12.0
+
+      - name: Setup - ping basic tools and perform pre-installation
+        shell: bash
+        run: |-
+          just --version
+          python3 --version
+          python3 -m pip install --upgrade pip wheel
+          just setup
+
+      - name: STEP 1 - build code
+        shell: bash
+        run: |-
+          just build
+
+      - name:  STEP 2 - check linting
+        shell: bash
+        run: |-
+          just prettify
+
+      - name:  STEP 3 - run unit tests
+        shell: bash
+        run: |-
+          just tests-unit
+
+  # only performed if qa passes and option set
+  deploy:
+    name: DEPLOY
+    runs-on: ${{ github.event.inputs.docker-image }}
+    environment: "${{ github.event.inputs.environment }}"
+    env: {}
+
+    steps:
+      - uses: actions/checkout@v4.2.2
+
+      - name: Message
+        shell: bash
+        run: |-
+          echo "Not yet implemented"
