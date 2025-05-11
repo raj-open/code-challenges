@@ -38,13 +38,14 @@
 /// for `k in [3:2n]` via
 /// products of powers of the form `G^(2^l)`,
 /// relying on the binary representation of each `k`.
-/// We thereby only need to compute `floor(log2(2n)) = O(log(n))` powers,
-/// and the products of such powers are themselves `O(log(n))`
-/// and we do this for `O(n)` entries.
+///
+/// By reorganising the multiplication tasks into a binary tree,
+/// the total time complexity for computing powers is O(n).
+/// (One can more precisely compute this as lying between n/2 and n)
 /// So in total, the time complexity is
 ///
 /// ```
-/// O(n log(n)^2).
+/// O(n) + O(n) = O(n)
 /// ```
 
 /// ----------------------------------------------------------------
