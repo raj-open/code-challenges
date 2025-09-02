@@ -196,11 +196,11 @@ tests-unit-optimised *args:
 # --------------------------------
 
 prettify:
-    @cargo fmt --verbose -- --force
+    @cargo fmt --verbose
 
 prettify-dry:
     @echo "Not yet implemented"
-    @# cargo fmt --verbose --check -- --force
+    @# cargo fmt --verbose --check
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # TARGETS: clean

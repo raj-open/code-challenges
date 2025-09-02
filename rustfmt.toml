@@ -2,8 +2,9 @@ reorder_imports = false
 combine_control_expr = false
 condense_wildcard_suffixes = false
 disable_all_formatting = false
+# use_small_heuristics = "Off"
 
-fn_args_layout = "Block" # "Visual", "Block"
+fn_args_layout = "Tall"
 fn_single_line = false
 
 hard_tabs = false
