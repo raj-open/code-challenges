@@ -3,3 +3,4 @@
 /// Source: <https://www.hackerrank.com/contests/projecteuler/challenges>.
 
 pub mod problem10_prime_summation;
+pub mod problem254_sum_digit_factorials;
