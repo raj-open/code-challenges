@@ -20,6 +20,10 @@ members = [
     ".",
 ]
 
+[[bin]]
+name = "games-genius-square"
+path = "src/bin/games/genius_square/main.rs"
+
 # [env]
 # NOTE: has no effect
 # PYO3_PYTHON = { value = "python3" }
