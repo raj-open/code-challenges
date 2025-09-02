@@ -117,7 +117,6 @@ build-requirements:
     @just build-requirements-dependencies
 
 build-requirements-basic:
-    @rustup default stable
     @cargo update --verbose
     @cargo install --locked --force cargo-zigbuild
     @# cargo install --locked --force rustfmt
@@ -171,26 +170,26 @@ tests-logs log_path="logs":
 test-unit path *args:
     @cargo zigbuild --tests
     @echo "run unit tests in $( just _rust_path_to_test_module "{{path}}")"
-    @cargo test --lib "$( just _rust_path_to_test_module "{{path}}")" {{args}}
+    @cargo test --lib "$( just _rust_path_to_test_module "{{path}}")" {{args}} -- --nocapture
     @# echo "run unit tests in $( just _rust_path_to_module "{{path}}")"
-    @# cargo test --lib "$( just _rust_path_to_module "{{path}}")" {{args}}
+    @# cargo test --lib "$( just _rust_path_to_module "{{path}}")" {{args}} -- --nocapture
 
 test-unit-optimised path *args:
     @cargo zigbuild --tests --release
     @echo "run unit tests in $( just _rust_path_to_test_module "{{path}}")"
-    @cargo test --lib "$( just _rust_path_to_test_module "{{path}}")" {{args}}
+    @cargo test --lib "$( just _rust_path_to_test_module "{{path}}")" {{args}} -- --nocapture
     @# echo "run unit tests in $( just _rust_path_to_module "{{path}}")"
-    @# cargo test --lib "$( just _rust_path_to_module "{{path}}")" {{args}}
+    @# cargo test --lib "$( just _rust_path_to_module "{{path}}")" {{args}} -- --nocapture
 
 tests-unit *args:
     @just _reset-logs
     @cargo zigbuild --tests
-    @cargo test --lib {{args}}
+    @cargo test --lib {{args}} -- --nocapture
 
 tests-unit-optimised *args:
     @just _reset-logs
     @cargo zigbuild --tests --release
-    @cargo test --lib {{args}}
+    @cargo test --lib {{args}} -- --nocapture
 
 # --------------------------------
 # TARGETS: prettify
@@ -200,7 +199,8 @@ prettify:
     @cargo fmt --verbose
 
 prettify-dry:
-    @cargo fmt --verbose --check
+    @echo "Not yet implemented"
+    @# cargo fmt --verbose --check
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # TARGETS: clean
@@ -215,6 +215,7 @@ clean-basic log_path="logs":
     @- just _clean-all-files "." ".DS_Store" 2> /dev/null
     @echo "All build artefacts will be force removed."
     @cargo clean
+    @just _clean-all-files "." "*.rs.bk"
     @- rm -rf ".venv" 2> /dev/null
     @- rm -rf "target" 2> /dev/null
 
@@ -280,5 +281,5 @@ check-system:
 
 check-system-requirements:
     @just _check-tool "cargo" "cargo"
-    @# just _check-tool "cargo fmt" "cargo fmt"
+    @# just _check-tool "cargo fmt -- --force" "cargo fmt"
     @just _check-tool "cargo-zigbuild" "cargo-zigbuild"

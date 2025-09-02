@@ -1,0 +1,25 @@
+reorder_imports = false
+combine_control_expr = false
+condense_wildcard_suffixes = false
+disable_all_formatting = false
+# use_small_heuristics = "Off"
+
+fn_args_layout = "Tall"
+fn_single_line = false
+
+hard_tabs = false
+newline_style = "Unix"
+trailing_comma = "Vertical"
+
+format_strings = false
+force_explicit_abi = true
+
+struct_lit_width = 40
+fn_call_width = 60
+max_width = 100
+comment_width = 200
+normalize_comments = false
+doc_comment_width = 200
+normalize_doc_attributes = false
+wrap_comments = false
+wrap_doc_comments = false

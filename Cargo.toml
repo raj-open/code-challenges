@@ -1,7 +1,7 @@
 # cargo-features = ["profile-rustflags"]
 
 [package]
-name = "code_challenges"
+name = "general"
 version = "0.1.0"
 edition = "2024"
 description = "Code for challenges from various platforms"
@@ -12,7 +12,7 @@ authors = [
 
 # cf. https://doc.rust-lang.org/cargo/reference/manifest.html
 # [lib]
-# name = "code_challenges"
+# name = "general"
 # crate-type = ["lib"]
 
 [workspace]
@@ -50,15 +50,14 @@ strip = false
 
 [dependencies]
 serde = {version = "^1.0.219", features = ["derive"]}
-serde_json = {version = "^1.0.140"}
+serde_json = {version = "^1.0.143"}
 dict_derive = {version = "^0.6.0" }
 dedent = {version="^0.1.1"}
 
 [dev-dependencies]
-cargo-zigbuild = {version = "^0.20.0"}
-rstest = {version = "^0.25.0"}
-# FIXME: currently fail to build on unix
-# rustfmt = {version = "^0.10.0", features = []}
+cargo-zigbuild = {version = "^0.20.1"}
+rstest = {version = "^0.26.1"}
+rustfmt = {version = "^0.10.0", features = []}
 # just = {version = "^1.40.0"}
 
 [[bin]]

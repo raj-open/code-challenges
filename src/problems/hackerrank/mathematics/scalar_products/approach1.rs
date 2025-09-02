@@ -1,5 +1,3 @@
-use core::iter::IntoIterator;
-use core::iter::Iterator;
 /// # First approach #
 ///
 /// This approach is not mathematically optimised,
@@ -10,11 +8,15 @@ use core::iter::Iterator;
 /// ----------------------------------------------------------------
 /// IMPORTS
 /// ----------------------------------------------------------------
+
+use core::iter::IntoIterator;
+use core::iter::Iterator;
 // use core::convert::TryFrom;
 use std::collections::HashSet;
 use std::fmt::Debug;
 use std::io;
 use std::io::BufRead;
+use std::io::Stdin;
 use std::slice::Iter;
 use std::str::FromStr;
 
@@ -22,9 +24,11 @@ use std::str::FromStr;
 /// MAIN
 /// ----------------------------------------------------------------
 
+/// entry point when used as a script
 #[allow(unused)]
 fn main() {
-    let line = read_input();
+    let lines = read_input(&io::stdin());
+    let line = lines.iter().nth(0).unwrap();
 
     let args: Vec<String> = line.split(" ").map(|x| x.to_string()).collect();
     let mut args: Iter<'_, String> = args.iter();
@@ -39,24 +43,24 @@ fn main() {
 }
 
 pub fn run(c: i32, m: i32, n: usize) -> usize {
-    let vecs = SeqPair::new(m, 0, c)
+    let vecs = SeqPair::new(m as i64, 0, c as i64)
         .into_iter()
         .map(|s| (s.current, s.next))
         .skip(2)
         .step_by(2)
         .take(n);
 
-    let mut values: HashSet<i32> = HashSet::new();
+    let mut values: HashSet<i64> = HashSet::new();
 
     for (k, u) in vecs.enumerate() {
-        let vecs2 = SeqPair::new(m, u.0, u.1)
+        let vecs2 = SeqPair::new(m as i64, u.0, u.1)
             .into_iter()
             .map(|s| (s.current, s.next))
             .skip(2)
             .step_by(2)
             .take(n - (k + 1));
         for v in vecs2 {
-            let ip = (u.0 * v.0 + u.1 * v.1).rem_euclid(m);
+            let ip = (u.0 * v.0 + u.1 * v.1).rem_euclid(m as i64);
             values.insert(ip);
         }
     }
@@ -68,12 +72,11 @@ pub fn run(c: i32, m: i32, n: usize) -> usize {
 /// ----------------------------------------------------------------
 /// SECONDARY
 /// ----------------------------------------------------------------
-
 #[derive(Clone, Debug)]
 struct SeqPair {
-    modulus: i32,
-    current: i32,
-    next: i32,
+    modulus: i64,
+    current: i64,
+    next: i64,
 }
 
 trait EntityIterable {
@@ -90,12 +93,8 @@ where
 }
 
 impl SeqPair {
-    fn new(modulus: i32, x: i32, y: i32) -> Self {
-        Self {
-            modulus,
-            current: x,
-            next: y,
-        }
+    fn new(modulus: i64, x: i64, y: i64) -> Self {
+        Self { modulus, current: x, next: y }
     }
 }
 
@@ -134,11 +133,8 @@ impl IntoIterator for SeqPair {
     type Item = SeqPair;
     type IntoIter = EntityIterator<SeqPair>;
 
-    fn into_iter(self) -> EntityIterator<SeqPair> {
-        EntityIterator {
-            index: 0,
-            entity: self.clone(),
-        }
+    fn into_iter(self) -> Self::IntoIter {
+        return EntityIterator { index: 0, entity: self.clone() };
     }
 }
 
@@ -146,12 +142,11 @@ impl IntoIterator for SeqPair {
 /// AUXILIARY
 /// ----------------------------------------------------------------
 
+/// Obtains input lines from stdin
+/// as a vector of strings.
 #[allow(unused)]
-fn read_input() -> String {
-    let stdin = io::stdin();
-    let mut input = stdin.lock().lines();
-    let line = input.next().unwrap().unwrap().trim().to_string();
-    return line;
+fn read_input(stream: &Stdin) -> Vec<String> {
+    stream.lock().lines().filter_map(Result::ok).collect()
 }
 
 #[allow(unused)]
