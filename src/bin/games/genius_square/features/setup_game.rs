@@ -10,7 +10,7 @@ use crate::models::dice::methods::roll_dice;
 /// METHODS
 /// ----------------------------------------------------------------
 
-pub fn feature_create_game(
+pub fn feature_setup_game(
     rng: &mut ChaCha8Rng,
     option_roll: Option<Vec<String>>,
 ) {

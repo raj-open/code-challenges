@@ -1,3 +1,3 @@
 /// Highest logic of application.
 
-pub mod create_game;
+pub mod setup_game;

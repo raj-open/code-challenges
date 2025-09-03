@@ -10,7 +10,7 @@ mod algorithms;
 mod models;
 mod features;
 
-use features::create_game::feature_create_game;
+use features::setup_game::feature_setup_game;
 
 /// ----------------------------------------------------------------
 /// MAIN
@@ -21,5 +21,5 @@ fn main() {
     let option_roll = if args.len() >= 7 { Some(args[0..7].to_vec()) } else { None };
     let option_seed = if args.len() >= 1 { Some(args[args.len() - 1].clone()) } else { None };
     let mut rng = _core::rand::seed_rng(option_seed);
-    feature_create_game(&mut rng, option_roll);
+    feature_setup_game(&mut rng, option_roll);
 }
