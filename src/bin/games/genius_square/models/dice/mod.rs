@@ -1,4 +1,4 @@
-/// Models used in game.
+/// Models for handling dice
 
-pub mod constants;
 pub mod methods;
+pub mod models;

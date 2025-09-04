@@ -8,5 +8,5 @@
 /// CONSTANTS
 /// ----------------------------------------------------------------
 
-#[allow(unused)]
-pub const PIECES: &[&[&str]] = &[];
+pub const GRID_HEIGHT: usize = 6;
+pub const GRID_WIDTH: usize = 6;

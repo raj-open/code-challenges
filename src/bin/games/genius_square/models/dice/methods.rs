@@ -5,7 +5,7 @@
 use rand_chacha::ChaCha8Rng;
 use rand::prelude::IndexedRandom;
 
-use super::constants;
+use crate::models::constants::dice::*;
 
 /// ----------------------------------------------------------------
 /// METHODS
@@ -14,7 +14,7 @@ use super::constants;
 pub fn roll_dice(
     rng: &mut ChaCha8Rng,
 ) -> Vec<String> {
-    constants::DICE
+    DICE
     .iter()
     .map(|die| die.choose(rng).unwrap().to_string())
     .collect()

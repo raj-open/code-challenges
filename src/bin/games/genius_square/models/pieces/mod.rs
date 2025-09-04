@@ -1,4 +1,4 @@
-/// Models used in game.
+/// Models for handling pieces
 
-pub mod constants;
 pub mod methods;
+pub mod models;
