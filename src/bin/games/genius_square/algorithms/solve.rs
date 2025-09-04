@@ -2,6 +2,9 @@
 /// IMPORTS
 /// ----------------------------------------------------------------
 
+use indicatif::ProgressBar;
+use indicatif::ProgressStyle;
+
 use crate::models::constants::enums::ENUM_PIECES;
 use crate::models::constants::enums::EnumPiece;
 use crate::models::pieces::models::Piece;
@@ -16,7 +19,7 @@ pub fn solve_brute_force(
     board: &GameBoard,
 ) -> GameBoard {
     let obst = board.get_block().to_owned();
-    match recursion(board, &obst, None) {
+    match recursion(board, &obst, None, None) {
         Some(board_) => {
             return board_;
         },
@@ -33,13 +36,34 @@ pub fn solve_brute_force(
 fn recursion(
     board: &GameBoard,
     obst: &Piece,
-    kinds: Option<&[EnumPiece]>,
+    option_kinds: Option<&[EnumPiece]>,
+    option_pbar: Option<&ProgressBar>,
 ) -> Option<GameBoard> {
-    let kinds = kinds.unwrap_or(ENUM_PIECES);
+    let kinds = option_kinds.unwrap_or(ENUM_PIECES);
+    let n = kinds.len() as u64;
 
-    if kinds.len() == 0 {
+    let pbar0 = ProgressBar::new(n);
+    let pbar: &ProgressBar;
+    match option_pbar {
+        Some(pbar_) => {
+            pbar = &pbar_;
+        },
+        None => {
+            pbar = &pbar0;
+            pbar.set_style(
+                ProgressStyle::with_template(
+                    "{spinner:.white} [{elapsed_precise}] [{wide_bar:.white}] {pos}/{len} ({eta_precise})"
+                )
+                .unwrap(),
+            );
+        }
+    }
+
+    if n == 0 {
         // if nothing left to solve, then return pieces, provide everything is filled
         if obst.get_coweight() == 0 {
+            pbar.finish_and_clear();
+            println!("Completed in {:.2?}", pbar.elapsed());
             return Some(board.to_owned());
         }
     } else {
@@ -48,6 +72,7 @@ fn recursion(
         let kinds = &kinds[1..];
         let piece0 = Piece::from_kind(kind, None); // initialised piece
         for piece in board.get_configurations(&piece0, &obst) {
+            pbar.inc(1);
             // update the obstacle
             let obst_ = obst.clone() + piece.clone();
 
@@ -56,11 +81,14 @@ fn recursion(
             board_.add_piece(&kind.clone(), &piece);
 
             // compute remainder of solution recursively
-            match recursion(&mut board_, &obst_, Some(kinds)) {
+            match recursion(&mut board_, &obst_, Some(kinds), Some(&pbar)) {
                 Some(board_) => {
                     return Some(board_);
                 },
-                None => {},
+                None => {
+                    let k = pbar.position();
+                    pbar.set_position((k - 1).max(0));
+                },
             }
         }
     }
