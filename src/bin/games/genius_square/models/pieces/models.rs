@@ -128,6 +128,14 @@ impl Piece {
     }
 
     #[allow(unused)]
+    pub fn transform_rotate(&self, k: i8, recentre: bool) -> Self {
+        let kind = self.get_kind();
+        let positions = self.positions.transform_rotate(k, recentre);
+        let result = Self {kind, positions};
+        return result;
+    }
+
+    #[allow(unused)]
     pub fn transform_shift(
         &self,
         di: isize,

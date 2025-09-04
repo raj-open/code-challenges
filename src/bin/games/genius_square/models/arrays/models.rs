@@ -146,6 +146,20 @@ impl BinArray {
         return result;
     }
 
+    pub fn transform_rotate(&self, k: i8, recentre: bool) -> Self {
+        match k {
+            1 => {
+                return self.transform_transpose(false).transform_vflip(recentre);
+            },
+            -1 => {
+                return self.transform_vflip(false).transform_transpose(recentre);
+            },
+            _ => {
+                return self.clone();
+            }
+        }
+    }
+
     /// For collision comparison
     pub fn transform_dither(&self) -> Self {
         let (m, n) = self.get_shape();
@@ -173,12 +187,12 @@ impl BinArray {
         let params = iproduct!(
             [false, true],
             [false, true],
-            [false, true],
+            [0, 1, -1],
             range_i,
             range_j,
         );
         let moves = params
-            .map(|(hflip, vflip, tr, di, dj)| {
+            .map(|(hflip, vflip, rot, di, dj)| {
                 // recover original
                 let mut arr = self.clone();
                 if hflip {
@@ -187,10 +201,10 @@ impl BinArray {
                 if vflip {
                     arr = arr.transform_vflip(false);
                 }
-                if tr {
-                    arr = arr.transform_transpose(false);
+                if rot != 0 {
+                    arr = arr.transform_rotate(rot, false);
                 }
-                if hflip | vflip | tr {
+                if hflip | vflip | (rot != 0) {
                     arr = arr.recentre();
                 }
                 arr = arr.transform_shift(di, dj);
