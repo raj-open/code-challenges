@@ -31,7 +31,6 @@ pub enum EnumPiece {
 }
 
 pub const ENUM_PIECES: &[EnumPiece] = &[
-    EnumPiece::Block,
     EnumPiece::Symb1,
     EnumPiece::Symb2,
     EnumPiece::Symb3,
