@@ -34,6 +34,6 @@ pub fn feature_setup_game(
 
     // Solve the problem
     println!("\nCompute solution...\n");
-    solve_brute_force(&mut board);
+    board = solve_brute_force(&board);
     println!("\nSolution:\n{}\n", board.pretty());
 }
