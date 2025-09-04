@@ -53,13 +53,13 @@ impl BinArray {
         return coords;
     }
 
-    pub fn get_weight(&self) -> u8 {
+    pub fn get_weight(&self) -> isize {
         let values = self.values.mapv(|x| if x == 0 {0} else {1});
         let weight = values.sum();
         return weight;
     }
 
-    pub fn get_coweight(&self) -> u8 {
+    pub fn get_coweight(&self) -> isize {
         let covalues = self.values.mapv(|x| if x == 0 {1} else {0});
         let coweight = covalues.sum();
         return coweight;
