@@ -1,4 +1,4 @@
-/// Modules for code base Genius Square
+/// Modules available for Genius Square binary
 
 pub mod algorithms;
 pub mod features;
