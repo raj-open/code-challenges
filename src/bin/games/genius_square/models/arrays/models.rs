@@ -89,25 +89,25 @@ impl BinArray {
         di: isize,
         dj: isize,
     ) -> Self {
-        // shift coords
-        let m = self.m as isize;
-        let n = self.n as isize;
-        let coords = self.to_coords();
-        let coords: Vec<(usize, usize)> = coords
-            .iter()
-            .map(|&(i, j)| (i as isize, j as isize))
-            .map(|(i, j)| (i + di, j + dj))
-            .filter(|&(i, j)| (0 <= i && i < m && 0 <= j && j < n))
-            .map(|(i, j)| (usize::try_from(i).unwrap(), usize::try_from(j).unwrap()))
-            .collect();
-
-        // update values
+        // create blank 3 x 3 meta block
         let m = self.m;
         let n = self.n;
-        let mut values = Array2::<u8>::zeros((m, n));
-        for coord in coords {
-            values[[coord.0, coord.1]] = 1;
-        }
+        let mut slate = Array2::<u8>::zeros((3*m, 3*n));
+
+        // slot in values in location shifted from the middle
+        let i0 = self.m as isize + di;
+        let i1 = (self.m as isize) + i0;
+        let j0 = self.n as isize + dj;
+        let j1 = (self.n as isize) + j0;
+        let mut view = slate.slice_mut(slice![i0..i1, j0..j1]);
+        view.assign(&self.values);
+
+        // restrict to "middle" part
+        let i0 = self.m;
+        let i1 = self.m + i0;
+        let j0 = self.n;
+        let j1 = self.n + j0;
+        let values = slate.slice_mut(slice![i0..i1, j0..j1]).to_owned();
         let result = Self {m, n, values};
         return result;
     }
@@ -179,30 +179,35 @@ impl BinArray {
         return result;
     }
 
-    pub fn moves(&self) -> impl Iterator<Item = Self> {
-        let m = self.m;
-        let n = self.n;
-        let range_i: Vec<isize> = (0.. m).map(|i| i as isize).collect();
-        let range_j: Vec<isize> = (0.. n).map(|j| j as isize).collect();
-        let params = iproduct!(
-            [false, true],
-            [false, true],
+    /// Determines all possible configurations
+    /// of the same array subject to
+    ///
+    /// - rotations,
+    /// - v- and h-flips,
+    /// - v- and h-shifts
+    ///
+    /// provided the moves preserve the "weight" of the shadow in the array
+    pub fn get_configurations(&self) -> impl Iterator<Item = Self> {
+        let m = self.m as isize;
+        let n = self.n as isize;
+        let iterator = iproduct!(
             [0, 1, -1],
-            range_i,
-            range_j,
-        );
-        let moves = params
-            .map(|(hflip, vflip, rot, di, dj)| {
+            [false, true],
+            [false, true],
+            (0.. m),
+            (0.. n),
+        )
+            .map(|(rot, vflip, hflip, di, dj)| {
                 // recover original
                 let mut arr = self.clone();
-                if hflip {
-                    arr = arr.transform_hflip(false);
+                if rot != 0 {
+                    arr = arr.transform_rotate(rot, false);
                 }
                 if vflip {
                     arr = arr.transform_vflip(false);
                 }
-                if rot != 0 {
-                    arr = arr.transform_rotate(rot, false);
+                if hflip {
+                    arr = arr.transform_hflip(false);
                 }
                 if hflip | vflip | (rot != 0) {
                     arr = arr.recentre();
@@ -213,9 +218,9 @@ impl BinArray {
             // if geometric operations shift shape off the grid, skip
             .filter(|arr| {
                 let wt = self.get_weight();
-                return arr.get_weight() == wt;
+                return arr.get_weight() >= wt;
             });
-        return moves;
+        return iterator;
     }
 }
 

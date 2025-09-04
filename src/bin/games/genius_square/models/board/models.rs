@@ -124,7 +124,19 @@ impl GameBoard {
         return text;
     }
 
-    pub fn moves(
+    /// Determines all possible configurations
+    /// of the same piece subject to
+    ///
+    ///  - rotations,
+    /// - v- and h-flips,
+    /// - v- and h-shifts
+    ///
+    /// provided the moves preserve the "weight" of the shadow in the array
+    /// and provided
+    ///
+    /// - no collisions occur with already placed pieces (marked by `obst`)
+    /// - the piece is not adjacent to certain other pieces.
+    pub fn get_configurations(
         &self,
         piece: &Piece,
         obst: &Piece,
@@ -134,7 +146,7 @@ impl GameBoard {
             // convert to positions
             .get_positions()
             // get all possible moves
-            .moves()
+            .get_configurations()
             // skip all moves which collide with obstacle
             .filter(|pos| {
                 let pos_obst = obst.get_positions();

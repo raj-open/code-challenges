@@ -49,19 +49,19 @@ fn recursion(
     // otherwise go through all permissible moves for next piece and then proceed recursively
     let kind = &kinds[0].clone();
     let kinds_ = &kinds[1..];
-    let piece = Piece::from_kind(kind, None); // initialised piece
-    for p in board.moves(&piece, &obst) {
+    let piece0 = Piece::from_kind(kind, None); // initialised piece
+    for piece in board.get_configurations(&piece0, &obst) {
         // update the obstacle
-        let obst_ = obst.clone() + p.clone();
+        let obst_ = obst.clone() + piece.clone();
 
         // update the solution
         let mut pieces_ = pieces.clone();
-        pieces_.insert(kind.clone(), p);
+        pieces_.insert(kind.clone(), piece);
 
         // compute remainder of solution recursively
         match recursion(board, Some(obst_), Some(kinds_), Some(pieces_)) {
-            Some(result) => {
-                return Some(result);
+            Some(pieces) => {
+                return Some(pieces);
             },
             None => {},
         }
