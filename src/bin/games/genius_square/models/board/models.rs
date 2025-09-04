@@ -179,7 +179,7 @@ impl GameBoard {
                     let collision = pos_dither.to_owned() * q.get_positions().to_owned();
                     let penalty = -collision.get_weight();
                     if penalty < 0 {
-                        return false
+                        return false;
                     }
                 }
                 return true;
