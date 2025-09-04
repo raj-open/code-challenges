@@ -157,8 +157,8 @@ impl GameBoard {
             .filter(|pos| {
                 let pos_obst = obst.get_positions();
                 let collision = pos.to_owned() * pos_obst.to_owned();
-                let penalty = collision.get_weight();
-                return penalty == 0;
+                let penalty = -collision.get_weight();
+                return penalty >= 0;
             })
             // skip all moves which lead to forbidden adjacent pieces
             .filter(|pos| {
@@ -177,7 +177,7 @@ impl GameBoard {
                     }
 
                     let collision = pos_dither.to_owned() * q.get_positions().to_owned();
-                    let penalty = collision.get_weight();
+                    let penalty = -collision.get_weight();
                     if penalty < 0 {
                         return false
                     }
