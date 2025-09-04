@@ -17,6 +17,7 @@ use super::pieces::*;
 
 #[derive(Clone, Debug, Eq, Hash, PartialEq)]
 pub enum EnumPiece {
+    Blank,
     Block,
     Symb1,
     Symb2,
@@ -57,6 +58,7 @@ impl EnumPiece {
     #[allow(unused)]
     pub const fn as_str(&self) -> &'static str {
         match self {
+            EnumPiece::Blank => " ",
             EnumPiece::Block => SYMB_BLOCK,
             EnumPiece::Symb1 => SYMB_PIECE_1,
             EnumPiece::Symb2 => SYMB_PIECE_2,
@@ -73,6 +75,7 @@ impl EnumPiece {
     #[allow(unused)]
     pub const fn to_formatted(&self) -> &'static str {
         match self {
+            EnumPiece::Blank => " ",
             EnumPiece::Block => SYMB_FMT_BLOCK,
             EnumPiece::Symb1 => SYMB_FMT_PIECE_1,
             EnumPiece::Symb2 => SYMB_FMT_PIECE_2,
@@ -88,6 +91,7 @@ impl EnumPiece {
 
     pub fn get_positions(&self) -> BinArray {
         let raw = match self {
+            EnumPiece::Blank => " ",
             EnumPiece::Block => BLOCK,
             EnumPiece::Symb1 => PIECE_1,
             EnumPiece::Symb2 => PIECE_2,

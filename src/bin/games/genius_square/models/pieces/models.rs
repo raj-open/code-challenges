@@ -41,7 +41,7 @@ impl Piece {
         let m = GRID_HEIGHT;
         let n = GRID_WIDTH;
         let positions = BinArray::from_coords(coords, m, n);
-        let kind = option_kind.unwrap_or(EnumPiece::Block);
+        let kind = option_kind.unwrap_or(EnumPiece::Blank);
         Self {kind, positions}
     }
 
@@ -66,12 +66,12 @@ impl Piece {
     }
 
     #[allow(unused)]
-    pub fn get_weight(&self) -> u8 {
+    pub fn get_weight(&self) -> isize {
         self.positions.get_weight()
     }
 
     #[allow(unused)]
-    pub fn get_coweight(&self) -> u8 {
+    pub fn get_coweight(&self) -> isize {
         self.positions.get_coweight()
     }
 
