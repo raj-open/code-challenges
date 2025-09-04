@@ -164,15 +164,14 @@ impl BinArray {
     pub fn transform_dither(&self) -> Self {
         let (m, n) = self.get_shape();
         let coords = self.to_coords();
-        let arr = BinArray::from_coords(coords, m + 2, n + 2);
-        arr.transform_shift(1, 1);
-        let arr1 = arr.transform_shift(-1, 0).to_owned();
-        let arr2 = arr.transform_shift(1, 0).to_owned();
-        let arr3 = arr.transform_shift(0, -1).to_owned();
-        let arr4 = arr.transform_shift(0, 1).to_owned();
-        let arr = arr + arr1 + arr2 + arr3 + arr4;
+        let mut arr = BinArray::from_coords(coords, m + 2, n + 2);
+        arr = arr.transform_shift(1, 1);
+        let arr1 = arr.transform_shift(-1, 0);
+        let arr2 = arr.transform_shift(1, 0);
+        let arr3 = arr.transform_shift(0, -1);
+        let arr4 = arr.transform_shift(0, 1);
+        arr = arr + arr1 + arr2 + arr3 + arr4;
         let values = arr.values
-            .mapv(|x| x.min(1))
             .slice(slice![1..-1, 1..-1])
             .to_owned();
         let result = Self {m, n, values};
@@ -236,7 +235,8 @@ impl Add for BinArray {
     fn add(self, other: Self) -> Self::Output {
         let m = self.m;
         let n = self.n;
-        let values = self.values + other.values;
+        let mut values = self.values.to_owned() + other.values.to_owned();
+        values = values.mapv(|x| x.min(1));
         return Self {m, n, values};
     }
 }
@@ -247,7 +247,7 @@ impl Mul for BinArray {
     fn mul(self, other: Self) -> Self::Output {
         let m = self.m;
         let n = self.n;
-        let values = self.values * other.values;
+        let values = self.values.to_owned() * other.values.to_owned();
         return Self {m, n, values};
     }
 }
