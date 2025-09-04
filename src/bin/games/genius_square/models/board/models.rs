@@ -163,7 +163,8 @@ impl GameBoard {
             // skip all moves which lead to forbidden adjacent pieces
             .filter(|pos| {
                 // only need to check for collisions of pieces of a paritcular kind
-                if !(NON_ADJACENT.contains(&piece.get_kind())) {
+                let kind = piece.get_kind();
+                if !(NON_ADJACENT.contains(&kind)) {
                     return true;
                 }
                 let pos_dither = pos.transform_dither();
@@ -172,7 +173,7 @@ impl GameBoard {
                     if !(NON_ADJACENT.contains(s)) {
                         continue;
                     }
-                    if *s == piece.get_kind() {
+                    if *s == kind {
                         continue;
                     }
 

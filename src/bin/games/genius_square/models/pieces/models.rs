@@ -66,6 +66,11 @@ impl Piece {
     }
 
     #[allow(unused)]
+    pub fn set_positions(&mut self, positions: &BinArray) {
+        self.positions = positions.clone();
+    }
+
+    #[allow(unused)]
     pub fn get_weight(&self) -> isize {
         self.positions.get_weight()
     }
