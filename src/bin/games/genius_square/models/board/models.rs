@@ -34,8 +34,14 @@ impl GameBoard {
         return Self {block: block.clone(), pieces}
     }
 
+    #[allow(unused)]
     pub fn add_piece(&mut self, symb: &EnumPiece, piece: &Piece) {
         self.pieces.insert(symb.clone(), piece.clone());
+    }
+
+    #[allow(unused)]
+    pub fn set_pieces(&mut self, pieces: &HashMap<EnumPiece, Piece>) {
+        self.pieces = pieces.clone();
     }
 
     pub fn get_block(&self) -> &Piece {
@@ -93,7 +99,7 @@ impl GameBoard {
         let m = GRID_HEIGHT;
         let n = GRID_WIDTH;
         let mut trace: Array2<String> = Array2::from_elem((m, n), " ".to_string());
-        let piece = &self.block;
+        let piece = self.get_block();
         for (i, j) in piece.to_coords() {
             let alpha = if formatted { piece.get_symb_fmt() } else { piece.get_symb() };
             trace[[i, j]] = alpha;
@@ -169,9 +175,10 @@ impl GameBoard {
                     if *s == piece.get_kind() {
                         continue;
                     }
+
                     let collision = pos_dither.to_owned() * q.get_positions().to_owned();
                     let penalty = collision.get_weight();
-                    if penalty > 0 {
+                    if penalty < 0 {
                         return false
                     }
                 }
