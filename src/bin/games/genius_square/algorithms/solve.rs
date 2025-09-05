@@ -50,12 +50,8 @@ fn recursion(
         },
         None => {
             pbar = &pbar0;
-            pbar.set_style(
-                ProgressStyle::with_template(
-                    "{spinner:.white} [{elapsed_precise}] [{wide_bar:.white}] {pos}/{len} ({eta_precise})"
-                )
-                .unwrap(),
-            );
+            let style = ProgressStyle::with_template("{spinner:.white} [{elapsed_precise}] [{wide_bar:.white}] {pos}/{len} ({eta_precise})");
+            pbar.set_style(style.unwrap())
         }
     }
 
