@@ -79,7 +79,7 @@ name = "CodeChallenges"
 path = "src/main.rs"
 
 [[bin]]
-name = "HackerRankMathematiks"
+name = "HackerRankMathematics"
 path = "src/problems/hackerrank/mathematics/main.rs"
 
 [[bin]]
