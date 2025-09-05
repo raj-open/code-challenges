@@ -34,15 +34,11 @@ pub fn feature_setup_game(
 
     // Solve the problem
     println!("\nCompute solution ...\n");
-    let (dt, result) = solve_brute_force(&board);
-    match result {
-        Some(board) => {
-            println!("... completed in {:.2?}", dt);
-            println!("\nSolution:\n{}\n", board.pretty());
-        },
-        None => {
-            println!("... terminated after {:.2?}", dt);
-            println!("\n\x1b[91mNo solution found!\x1b[0m\n");
-        }
+    let rx = solve_brute_force(&board);
+    if let Ok((dt, board)) = rx.recv() {
+        println!("... completed in {:.2?}", dt);
+        println!("\nSolution:\n{}\n", board.pretty());
+    } else {
+        println!("\n\x1b[91mNo solution found!\x1b[0m\n");
     }
 }

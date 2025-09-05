@@ -6,11 +6,21 @@ use indicatif::ProgressBar;
 use indicatif::ProgressStyle;
 use itertools::Itertools;
 use std::time::Duration;
+use std::thread::spawn;
+use std::sync::mpsc::channel;
+use std::sync::mpsc::Sender;
+use std::sync::mpsc::Receiver;
 
 use crate::models::constants::enums::ENUM_PIECES;
 use crate::models::constants::enums::EnumPiece;
 use crate::models::pieces::models::Piece;
 use crate::models::board::models::GameBoard;
+
+/// ----------------------------------------------------------------
+/// TYPES
+/// ----------------------------------------------------------------
+
+type CHAN = (Duration, GameBoard);
 
 /// ----------------------------------------------------------------
 /// METHODS
@@ -19,11 +29,15 @@ use crate::models::board::models::GameBoard;
 /// Recursively solves by check all possibilities
 pub fn solve_brute_force(
     board: &GameBoard,
-) -> (Duration, Option<GameBoard>) {
+) -> Receiver<CHAN> {
+    let (tx, rx) = channel::<CHAN>();
     let mut board = board.clone();
     board.initialise_obstacle();
-    let result = recursion(&board, None, None);
-    return result;
+    // DEV-NOTE: This is necessary to ensure that no locking occurs.
+    spawn(move || {
+        recursion(&tx, &board, None, None);
+    });
+    return rx;
 }
 
 /// ----------------------------------------------------------------
@@ -31,10 +45,11 @@ pub fn solve_brute_force(
 /// ----------------------------------------------------------------
 
 fn recursion(
+    tx: &Sender<CHAN>,
     board: &GameBoard,
     option_kinds: Option<&[EnumPiece]>,
     option_pbar: Option<&ProgressBar>,
-) -> (Duration, Option<GameBoard>) {
+) {
     let kinds = option_kinds.unwrap_or(ENUM_PIECES);
     let n = kinds.len() as u64;
 
@@ -56,7 +71,8 @@ fn recursion(
         if board.get_obstacle_coweight() == 0 {
             pbar.finish_and_clear();
             let dt = pbar.elapsed();
-            return (dt, Some(board.to_owned()));
+            let message = (dt, board.to_owned());
+            tx.send(message).unwrap();
         }
     } else {
         // find the next piece which has the fewest number of next possible moves
@@ -87,19 +103,9 @@ fn recursion(
             board_.update_obstacle(&piece);
 
             // compute remainder of solution recursively
-            let (dt, result) = recursion(&board_, Some(kinds), Some(&pbar));
-            match result {
-                Some(_) => {
-                    return (dt, result);
-                },
-                None => {
-                    let k = pbar.position();
-                    pbar.set_position((k - 1).max(0));
-                },
-            }
+            recursion(tx, &board_, Some(kinds), Some(&pbar));
+            let k = pbar.position();
+            pbar.set_position((k - 1).max(0));
         }
     }
-
-    let dt = pbar.elapsed();
-    return (dt, None);
 }
