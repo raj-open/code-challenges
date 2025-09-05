@@ -11,6 +11,7 @@ use std::fmt::Result;
 use std::ops::Add;
 use std::ops::Mul;
 use itertools::iproduct;
+use itertools::Itertools;
 
 /// ----------------------------------------------------------------
 /// STRUCTS
@@ -196,17 +197,23 @@ impl BinArray {
     /// - v- and h-shifts
     ///
     /// provided the moves preserve the "weight" of the shadow in the array
-    pub fn get_configurations(&self) -> impl Iterator<Item = Self> {
-        let m = self.m as isize;
-        let n = self.n as isize;
+    /// and provided
+    ///
+    /// - no collisions occur with an optional obstacle.
+    pub fn get_configurations(
+        &self,
+        option_obst: Option<&BinArray>,
+    ) -> impl Iterator<Item = Self> {
+        let (m, n) = self.get_shape();
+        let obst = option_obst.map_or_else(|| BinArray::from_coords(vec![], m, n), |x| x.clone());
+        let free = obst.transform_invert();
         let iterator = iproduct!(
             [0, 1, -1],
             [false, true],
             [false, true],
-            (0.. m),
-            (0.. n),
         )
-            .map(|(rot, vflip, hflip, di, dj)| {
+            // iterate through all orientations
+            .map(|(rot, vflip, hflip)| {
                 // recover original
                 let mut arr = self.clone();
                 if rot != 0 {
@@ -221,13 +228,40 @@ impl BinArray {
                 if hflip | vflip | (rot != 0) {
                     arr = arr.recentre();
                 }
-                arr = arr.transform_shift(di, dj);
                 return arr;
             })
+            // by fixing an anchor point and viewing the non-occupied positions
+            // get all possible shifts of the array
+            .map(move |arr| {
+                // an anchor point of the piece
+                let (i0, j0) = arr.get_anchor();
+                let i0 = i0 as isize;
+                let j0 = j0 as isize;
+                // all non-occupied points on gameboard
+                let shifts = free
+                    .to_coords()
+                    .iter()
+                    .map(|&(i, j)| {
+                        let di = (i as isize) - i0;
+                        let dj = (j as isize) - j0;
+                        let arr_ = arr.transform_shift(di, dj);
+                        return arr_;
+                    })
+                    .collect::<Vec<BinArray>>();
+                return shifts;
+            })
+            // since returned a vector of possibilities, need to flatten
+            .flatten()
             // if geometric operations shift shape off the grid, skip
             .filter(|arr| {
                 let wt = self.get_weight();
                 return arr.get_weight() >= wt;
+            })
+            // if geometric operations collide with obstacle, skip
+            .filter(move |arr| {
+                let collision = arr.to_owned() * obst.to_owned();
+                let penalty = -collision.get_weight();
+                return penalty >= 0;
             });
         return iterator;
     }
