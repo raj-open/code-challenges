@@ -146,7 +146,7 @@ run-py module="main" *args="":
 run-rust module="${MAIN_MODULE}" *args="":
     @just build-compile "{{module}}"
     @# "./target/release/{{module}}" {{args}}
-    @cargo run --bin "{{module}}"
+    @cargo run --release --bin "{{module}}" {{args}}
 
 # --------------------------------
 # TARGETS: development
@@ -154,6 +154,11 @@ run-rust module="${MAIN_MODULE}" *args="":
 
 dev *args:
     @echo "Not yet implemented"
+
+dev-rust module="${MAIN_MODULE}" *args="":
+    @just build-compile "{{module}}"
+    @# "./target/release/{{module}}" {{args}}
+    @cargo run --bin "{{module}}" {{args}}
 
 # --------------------------------
 # TARGETS: tests

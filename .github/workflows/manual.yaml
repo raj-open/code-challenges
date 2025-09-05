@@ -83,7 +83,7 @@ jobs:
 
           touch .env && rm .env
           echo "
-          MAIN_MODULE="code-challenges"
+          MAIN_MODULE="CodeChallenges"
           PYTHON_PATH="python${{ env.PYTHON_VERSION }}"
           ARCHITECTURE="${{ env.ARCHITECTURE }}"
           RUST_BACKTRACE=full
