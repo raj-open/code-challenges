@@ -4,6 +4,7 @@
 
 use indicatif::ProgressBar;
 use indicatif::ProgressStyle;
+use itertools::Itertools;
 use std::time::Duration;
 
 use crate::models::constants::enums::ENUM_PIECES;
@@ -58,6 +59,19 @@ fn recursion(
             return (dt, Some(board.to_owned()));
         }
     } else {
+        // find the next piece which has the fewest number of next possible moves
+        let kinds: Vec<EnumPiece> = kinds.iter()
+            .map(|kind| {
+                let piece = Piece::from_kind(kind, None);
+                let iterator = board.get_configurations(&piece);
+                let n = iterator.count();
+                return (kind, n);
+            })
+            // sort by ascending values of size of possibilities
+            .sorted_by_key(|&(_, n)| n as isize)
+            .map(|(kind, _)| kind.clone())
+            .collect();
+
         // otherwise go through all permissible moves for next piece and then proceed recursively
         let kind = &kinds[0].clone();
         let kinds = &kinds[1..];
