@@ -22,6 +22,9 @@ use crate::models::pieces::models::*;
 pub struct GameBoard {
     block: Piece,
     pieces: HashMap<EnumPiece, Piece>,
+    // for dynamic computations
+    obstacle_basic: Piece,
+    obstacle_dithered: Piece,
 }
 
 /// ----------------------------------------------------------------
@@ -31,7 +34,10 @@ pub struct GameBoard {
 impl GameBoard {
     pub fn new(block: &Piece) -> Self {
         let pieces: HashMap<EnumPiece, Piece> = HashMap::new();
-        return Self {block: block.clone(), pieces}
+        let block = block.clone();
+        let obstacle_basic = block.clone();
+        let obstacle_dithered = block.clone();
+        return Self {block, obstacle_basic, obstacle_dithered,  pieces}
     }
 
     #[allow(unused)]
@@ -46,6 +52,34 @@ impl GameBoard {
 
     pub fn get_block(&self) -> &Piece {
         &self.block
+    }
+
+    pub fn get_obstacle(&self) -> &Piece {
+        &self.obstacle_basic
+    }
+
+    #[allow(unused)]
+    pub fn get_obstacle_weight(&self) -> isize {
+        self.obstacle_basic.get_weight()
+    }
+
+    pub fn get_obstacle_coweight(&self) -> isize {
+        self.obstacle_basic.get_coweight()
+    }
+
+    pub fn initialise_obstacle(&mut self) {
+        self.obstacle_basic = self.block.to_owned();
+        self.obstacle_dithered = self.block.to_owned();
+    }
+
+    pub fn update_obstacle(&mut self, piece: &Piece) {
+        let symb = piece.get_kind();
+        self.obstacle_basic += piece.to_owned();
+        if NON_ADJACENT.contains(&symb) {
+            self.obstacle_dithered += piece.transform_dither().to_owned();
+        } else {
+            self.obstacle_dithered += piece.to_owned();
+        }
     }
 
     pub fn to_string(&self) -> String {
@@ -153,39 +187,14 @@ impl GameBoard {
     pub fn get_configurations(
         &self,
         piece: &Piece,
-        obst: &Piece,
     ) -> impl Iterator<Item = Piece> {
         let mut used: Vec<String> = vec![];
+        let obst_positions = self.get_obstacle().get_positions();
         let it = piece
             // convert to positions
             .get_positions()
             // get all possible orientations + shifts which do not collide with obstacle
-            .get_configurations(Some(obst.get_positions()))
-            // skip all moves which lead to forbidden adjacent pieces
-            .filter(|pos| {
-                // only need to check for collisions of pieces of a paritcular kind
-                let kind = piece.get_kind();
-                if !(NON_ADJACENT.contains(&kind)) {
-                    return true;
-                }
-                let pos_dither = pos.transform_dither();
-                for (s, q) in self.pieces.iter() {
-                    // only need to check for collisions of pieces of a paritcular kind
-                    if !(NON_ADJACENT.contains(s)) {
-                        continue;
-                    }
-                    if *s == kind {
-                        continue;
-                    }
-
-                    let collision = pos_dither.to_owned() * q.get_positions().to_owned();
-                    let penalty = -collision.get_weight();
-                    if penalty < 0 {
-                        return false;
-                    }
-                }
-                return true;
-            })
+            .get_configurations(Some(obst_positions))
             // convert to piece
             .map(|pos| {
                 let kind = piece.get_kind();
