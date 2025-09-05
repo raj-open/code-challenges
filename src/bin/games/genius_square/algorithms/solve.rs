@@ -16,10 +16,10 @@ use crate::models::board::models::GameBoard;
 
 /// Recursively solves by check all possibilities
 pub fn solve_brute_force(
-    board: &GameBoard,
+    board: &mut GameBoard,
 ) -> GameBoard {
-    let obst = board.get_block().to_owned();
-    match recursion(board, &obst, None, None) {
+    board.initialise_obstacle();
+    match recursion(board, None, None) {
         Some(board_) => {
             return board_;
         },
@@ -35,7 +35,6 @@ pub fn solve_brute_force(
 
 fn recursion(
     board: &GameBoard,
-    obst: &Piece,
     option_kinds: Option<&[EnumPiece]>,
     option_pbar: Option<&ProgressBar>,
 ) -> Option<GameBoard> {
@@ -57,7 +56,7 @@ fn recursion(
 
     if n == 0 {
         // if nothing left to solve, then return pieces, provide everything is filled
-        if obst.get_coweight() == 0 {
+        if board.get_obstacle_coweight() == 0 {
             pbar.finish_and_clear();
             println!("...completed in {:.2?}", pbar.elapsed());
             return Some(board.to_owned());
@@ -67,17 +66,18 @@ fn recursion(
         let kind = &kinds[0].clone();
         let kinds = &kinds[1..];
         let piece0 = Piece::from_kind(kind, None); // initialised piece
-        for piece in board.get_configurations(&piece0, &obst) {
+        for piece in board.get_configurations(&piece0) {
             pbar.inc(1);
-            // update the obstacle
-            let obst_ = obst.clone() + piece.clone();
+            let mut board_ = board.clone();
 
             // update the solution
-            let mut board_ = board.clone();
             board_.add_piece(&kind.clone(), &piece);
 
+            // update the obstacle
+            board_.update_obstacle(&piece);
+
             // compute remainder of solution recursively
-            match recursion(&mut board_, &obst_, Some(kinds), Some(&pbar)) {
+            match recursion(&board_, Some(kinds), Some(&pbar)) {
                 Some(board_) => {
                     return Some(board_);
                 },
