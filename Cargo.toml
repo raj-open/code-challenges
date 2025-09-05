@@ -2,9 +2,10 @@
 
 [package]
 name = "general"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2024"
 description = "Code for challenges from various platforms"
+homepage = "github.com/raj-open/code-challenges"
 rust-version = "1.86"
 authors = [
     "raj-open <raj-open@users.noreply.github.com>",
@@ -35,12 +36,17 @@ members = [
 # ]
 debug = true
 strip = false
+opt-level = 3
+lto = true # link-time optimisation
+codegen-units = 1
 
 [profile.dev]
 # rustflags = [
 #     "-A", "unused_imports",
 #     "-A", "dead_code",
 # ]
+opt-level = 0
+lto = false # link-time optimisation
 
 [profile.test]
 # rustflags = [
@@ -53,6 +59,14 @@ serde = {version = "^1.0.219", features = ["derive"]}
 serde_json = {version = "^1.0.143"}
 dict_derive = {version = "^0.6.0" }
 dedent = {version="^0.1.1"}
+itertools = {version = "^0.14.0"}
+indoc = {version="^2.0.6"}
+indicatif = {version = "^0.18.0"}
+strip-ansi-escapes = {version="^0.2.1"}
+rand = {version="^0.9.2"}
+rand_chacha = {version = "^0.9.0"}
+# numpy = {version = "^0.26.0"}
+ndarray = {version = "^0.16.1"}
 
 [dev-dependencies]
 cargo-zigbuild = {version = "^0.20.1"}
@@ -61,9 +75,13 @@ rustfmt = {version = "^0.10.0", features = []}
 # just = {version = "^1.40.0"}
 
 [[bin]]
-name = "code-challenges"
+name = "CodeChallenges"
 path = "src/main.rs"
 
 [[bin]]
-name = "hackerrank_mathematics"
+name = "HackerRankMathematics"
 path = "src/problems/hackerrank/mathematics/main.rs"
+
+[[bin]]
+name = "GeniusSquare"
+path = "src/bin/games/genius_square/main.rs"
