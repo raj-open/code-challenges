@@ -151,15 +151,8 @@ impl GameBoard {
         let it = piece
             // convert to positions
             .get_positions()
-            // get all possible moves
-            .get_configurations()
-            // skip all moves which collide with obstacle
-            .filter(|pos| {
-                let pos_obst = obst.get_positions();
-                let collision = pos.to_owned() * pos_obst.to_owned();
-                let penalty = -collision.get_weight();
-                return penalty >= 0;
-            })
+            // get all possible orientations + shifts which do not collide with obstacle
+            .get_configurations(Some(obst.get_positions()))
             // skip all moves which lead to forbidden adjacent pieces
             .filter(|pos| {
                 // only need to check for collisions of pieces of a paritcular kind
