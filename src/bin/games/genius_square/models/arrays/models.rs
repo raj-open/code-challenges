@@ -225,9 +225,10 @@ impl BinArray {
                 if hflip {
                     arr = arr.transform_hflip(false);
                 }
-                if hflip | vflip | (rot != 0) {
-                    arr = arr.recentre();
-                }
+                // NOTE: No longer need this as anchor point will be shifted
+                // if hflip | vflip | (rot != 0) {
+                //     arr = arr.recentre();
+                // }
                 return arr;
             })
             // by fixing an anchor point and viewing the non-occupied positions
