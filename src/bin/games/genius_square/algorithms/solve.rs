@@ -59,7 +59,7 @@ fn recursion(
         // if nothing left to solve, then return pieces, provide everything is filled
         if obst.get_coweight() == 0 {
             pbar.finish_and_clear();
-            println!("Completed in {:.2?}", pbar.elapsed());
+            println!("...completed in {:.2?}", pbar.elapsed());
             return Some(board.to_owned());
         }
     } else {

@@ -30,7 +30,7 @@ pub fn feature_setup_game(
     let coords = dice.iter().map(|die| die.to_coords()).collect();
     let block = Piece::from_coords(coords, Some(EnumPiece::Block));
     let mut board = GameBoard::new(&block);
-    println!("\nProblem:\n{}\n", board.pretty());
+    println!("\nProblem:\n{}", board.pretty());
 
     // Solve the problem
     println!("\nCompute solution...\n");
