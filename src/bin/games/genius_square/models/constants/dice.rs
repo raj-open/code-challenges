@@ -53,3 +53,5 @@ pub const DICE: &[&[&str]] = &[
     &["B4","C3","C4","D3","D4","E3"],
     &["A4","B5","C5","C6","D6","F6"],
 ];
+
+pub const NUM_DICE: usize = DICE.len();
