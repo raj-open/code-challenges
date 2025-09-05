@@ -9,7 +9,9 @@ use std::fmt::Display;
 use std::fmt::Formatter;
 use std::fmt::Result;
 use std::ops::Add;
+use std::ops::AddAssign;
 use std::ops::Mul;
+use std::ops::MulAssign;
 use itertools::iproduct;
 use itertools::Itertools;
 
@@ -286,6 +288,12 @@ impl Add for BinArray {
     }
 }
 
+impl AddAssign for BinArray {
+    fn add_assign(&mut self, other: Self) {
+        *self = self.to_owned() + other;
+    }
+}
+
 impl Mul for BinArray {
     type Output = Self;
 
@@ -294,5 +302,11 @@ impl Mul for BinArray {
         let n = self.n;
         let values = self.values.to_owned() * other.values.to_owned();
         return Self {m, n, values};
+    }
+}
+
+impl MulAssign for BinArray {
+    fn mul_assign(&mut self, other: Self) {
+        *self = self.to_owned() * other;
     }
 }

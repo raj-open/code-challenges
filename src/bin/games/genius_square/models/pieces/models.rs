@@ -7,7 +7,9 @@ use std::fmt::Display;
 use std::fmt::Formatter;
 use std::fmt::Result;
 use std::ops::Add;
+use std::ops::AddAssign;
 use std::ops::Mul;
+use std::ops::MulAssign;
 
 use crate::models::arrays::models::BinArray;
 use crate::models::constants::board::*;
@@ -177,6 +179,12 @@ impl Add for Piece {
     }
 }
 
+impl AddAssign for Piece {
+    fn add_assign(&mut self, other: Self) {
+        *self = self.to_owned() + other;
+    }
+}
+
 impl Mul for Piece {
     type Output = Self;
 
@@ -184,5 +192,11 @@ impl Mul for Piece {
         let kind = self.get_kind();
         let positions = self.get_positions().to_owned() * other.get_positions().to_owned();
         return Self {kind, positions};
+    }
+}
+
+impl MulAssign for Piece {
+    fn mul_assign(&mut self, other: Self) {
+        *self = self.to_owned() * other;
     }
 }
