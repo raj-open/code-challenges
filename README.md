@@ -143,6 +143,13 @@ The standalone binary can be called as above:
 ./target/release/GeniusSquare B1 C4 D6 F1 F2 F3 F5
 ```
 
+#### Note on the algorithm ####
+
+The solver currently relies on a depth-first tree-search algorithm,
+with adaptive sorting, i.e. once pieces have been placed,
+the order of computation of the remaining pieces
+are locally sorted (in ascending order) based on the number of next possible moves.
+
 #### Example ####
 
 Calling
@@ -154,6 +161,7 @@ just run-rust GeniusSquare B1 C4 D6 F1 F2 F3 F5
 results in
 
 ```bash
+
 Roll: B1, C4, D6, F1, F2, F3, F5.
 
 
@@ -174,37 +182,40 @@ Problem:
 ║ 6 ║   │   │   │ ■ │   │   │
 ╙───╨───┴───┴───┴───┴───┴───┘
 
-Compute solution...
+Compute solution ...
 
-...completed in 725.18ms
+... completed in 22.44ms
 
 Solution:
 ╔═══╦═══╤═══╤═══╤═══╤═══╤═══╕
 ║   ║ A │ B │ C │ D │ E │ F │
 ╠═══╬═══╪═══╪═══╪═══╪═══╪═══╡
-║ 1 ║ 1 │ ■ │ 2 │ 2 │ Z │ ■ │
+║ 1 ║ C │ ■ │ X │ X │ 2 │ ■ │
 ╠───╬───┼───┼───┼───┼───┼───┤
-║ 2 ║ L │ X │ X │ Z │ Z │ ■ │
+║ 2 ║ C │ C │ X │ X │ 2 │ ■ │
 ╠───╬───┼───┼───┼───┼───┼───┤
-║ 3 ║ L │ X │ X │ Z │ T │ ■ │
+║ 3 ║ 4 │ 4 │ 4 │ 4 │ T │ ■ │
 ╠───╬───┼───┼───┼───┼───┼───┤
-║ 4 ║ L │ L │ ■ │ T │ T │ T │
+║ 4 ║ L │ 1 │ ■ │ T │ T │ T │
 ╠───╬───┼───┼───┼───┼───┼───┤
-║ 5 ║ 4 │ 4 │ 4 │ 4 │ C │ ■ │
+║ 5 ║ L │ L │ L │ Z │ Z │ ■ │
 ╠───╬───┼───┼───┼───┼───┼───┤
-║ 6 ║ 3 │ 3 │ 3 │ ■ │ C │ C │
+║ 6 ║ 3 │ 3 │ 3 │ ■ │ Z │ Z │
 ╙───╨───┴───┴───┴───┴───┴───┘
 ```
 
 in the console.
-The solver currently relies on a brute force tree-search algorithm,
-and provides solutions at the `Wizard` level,
+The algoirithm provides solutions at the `Wizard` level,
 viz. no collisions occur and none of the pieces
 
 ```text
-1 2 3 CC
-  2 3 C
-    3
+┌───┐ ┌───┐ ┌───┐ ┌───┬───┐
+│ 1 │ │ 2 │ │ 3 │ │ C │ C │
+└───┘ ├───┤ ├───┤ ├───┼───┘
+      │ 2 │ │ 3 │ │ C │
+      └───┘ ├───┤ └───┘
+            │ 3 │
+            └───┘
 ```
 
 are adjacent (in the sense of touching edges).
