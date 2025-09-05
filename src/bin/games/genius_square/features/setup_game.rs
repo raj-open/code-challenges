@@ -29,11 +29,20 @@ pub fn feature_setup_game(
     // Establish the problem
     let coords = dice.iter().map(|die| die.to_coords()).collect();
     let block = Piece::from_coords(coords, Some(EnumPiece::Block));
-    let mut board = GameBoard::new(&block);
+    let board = GameBoard::new(&block);
     println!("\nProblem:\n{}", board.pretty());
 
     // Solve the problem
-    println!("\nCompute solution...\n");
-    board = solve_brute_force(&mut board);
-    println!("\nSolution:\n{}\n", board.pretty());
+    println!("\nCompute solution ...\n");
+    let (dt, result) = solve_brute_force(&board);
+    match result {
+        Some(board) => {
+            println!("... completed in {:.2?}", dt);
+            println!("\nSolution:\n{}\n", board.pretty());
+        },
+        None => {
+            println!("... terminated after {:.2?}", dt);
+            println!("\n\x1b[91mNo solution found!\x1b[0m\n");
+        }
+    }
 }

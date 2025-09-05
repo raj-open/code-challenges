@@ -40,7 +40,6 @@ impl GameBoard {
         return Self {block, obstacle_basic, obstacle_dithered,  pieces}
     }
 
-    #[allow(unused)]
     pub fn add_piece(&mut self, symb: &EnumPiece, piece: &Piece) {
         self.pieces.insert(symb.clone(), piece.clone());
     }
@@ -54,8 +53,28 @@ impl GameBoard {
         &self.block
     }
 
-    pub fn get_obstacle(&self) -> &Piece {
-        &self.obstacle_basic
+    pub fn initialise_obstacle(&mut self) {
+        self.obstacle_basic = self.block.to_owned();
+        self.obstacle_dithered = self.block.to_owned();
+    }
+
+    pub fn get_obstacle(&self, kind: &EnumPiece) -> &Piece {
+        if NON_ADJACENT.contains(&kind) {
+            &self.obstacle_dithered
+        } else {
+            &self.obstacle_basic
+        }
+    }
+
+    pub fn update_obstacle(&mut self, piece: &Piece) {
+        let symb = piece.get_kind();
+        self.obstacle_basic += piece.to_owned();
+        if NON_ADJACENT.contains(&symb) {
+            let piece_dithered = piece.transform_dither();
+            self.obstacle_dithered += piece_dithered;
+        } else {
+            self.obstacle_dithered += piece.to_owned();
+        }
     }
 
     #[allow(unused)]
@@ -65,21 +84,6 @@ impl GameBoard {
 
     pub fn get_obstacle_coweight(&self) -> isize {
         self.obstacle_basic.get_coweight()
-    }
-
-    pub fn initialise_obstacle(&mut self) {
-        self.obstacle_basic = self.block.to_owned();
-        self.obstacle_dithered = self.block.to_owned();
-    }
-
-    pub fn update_obstacle(&mut self, piece: &Piece) {
-        let symb = piece.get_kind();
-        self.obstacle_basic += piece.to_owned();
-        if NON_ADJACENT.contains(&symb) {
-            self.obstacle_dithered += piece.transform_dither().to_owned();
-        } else {
-            self.obstacle_dithered += piece.to_owned();
-        }
     }
 
     pub fn to_string(&self) -> String {
@@ -184,29 +188,19 @@ impl GameBoard {
     ///
     /// - no collisions occur with already placed pieces (marked by `obst`)
     /// - the piece is not adjacent to certain other pieces.
-    pub fn get_configurations(
-        &self,
-        piece: &Piece,
-    ) -> impl Iterator<Item = Piece> {
-        let mut used: Vec<String> = vec![];
-        let obst_positions = self.get_obstacle().get_positions();
+    pub fn get_configurations(&self, piece: &Piece) -> impl Iterator<Item = Piece> {
+        // get obstacle in depenence on type of piece
+        let kind = piece.get_kind();
+        let obst = self.get_obstacle(&kind).get_positions();
+
+        // construct iterator
         let it = piece
             // convert to positions
             .get_positions()
             // get all possible orientations + shifts which do not collide with obstacle
-            .get_configurations(Some(obst_positions))
+            .get_configurations(Some(obst))
             // convert to piece
-            .map(|pos| {
-                let kind = piece.get_kind();
-                Piece::from_kind(&kind, Some(pos))
-            })
-            // skip duplicates
-            .filter(move |p| {
-                let value = p.to_string();
-                let dupl = used.contains(&value);
-                used.push(value);
-                return !dupl;
-            });
+            .map(move |pos| Piece::from_kind(&kind, Some(pos)));
         return it;
     }
 }

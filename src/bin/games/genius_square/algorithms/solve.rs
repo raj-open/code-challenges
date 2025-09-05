@@ -4,6 +4,7 @@
 
 use indicatif::ProgressBar;
 use indicatif::ProgressStyle;
+use std::time::Duration;
 
 use crate::models::constants::enums::ENUM_PIECES;
 use crate::models::constants::enums::EnumPiece;
@@ -16,17 +17,12 @@ use crate::models::board::models::GameBoard;
 
 /// Recursively solves by check all possibilities
 pub fn solve_brute_force(
-    board: &mut GameBoard,
-) -> GameBoard {
+    board: &GameBoard,
+) -> (Duration, Option<GameBoard>) {
+    let mut board = board.clone();
     board.initialise_obstacle();
-    match recursion(board, None, None) {
-        Some(board_) => {
-            return board_;
-        },
-        None => {
-            return board.to_owned();
-        }
-    }
+    let result = recursion(&board, None, None);
+    return result;
 }
 
 /// ----------------------------------------------------------------
@@ -37,7 +33,7 @@ fn recursion(
     board: &GameBoard,
     option_kinds: Option<&[EnumPiece]>,
     option_pbar: Option<&ProgressBar>,
-) -> Option<GameBoard> {
+) -> (Duration, Option<GameBoard>) {
     let kinds = option_kinds.unwrap_or(ENUM_PIECES);
     let n = kinds.len() as u64;
 
@@ -58,8 +54,8 @@ fn recursion(
         // if nothing left to solve, then return pieces, provide everything is filled
         if board.get_obstacle_coweight() == 0 {
             pbar.finish_and_clear();
-            println!("...completed in {:.2?}", pbar.elapsed());
-            return Some(board.to_owned());
+            let dt = pbar.elapsed();
+            return (dt, Some(board.to_owned()));
         }
     } else {
         // otherwise go through all permissible moves for next piece and then proceed recursively
@@ -77,9 +73,10 @@ fn recursion(
             board_.update_obstacle(&piece);
 
             // compute remainder of solution recursively
-            match recursion(&board_, Some(kinds), Some(&pbar)) {
-                Some(board_) => {
-                    return Some(board_);
+            let (dt, result) = recursion(&board_, Some(kinds), Some(&pbar));
+            match result {
+                Some(_) => {
+                    return (dt, result);
                 },
                 None => {
                     let k = pbar.position();
@@ -89,5 +86,6 @@ fn recursion(
         }
     }
 
-    return None;
+    let dt = pbar.elapsed();
+    return (dt, None);
 }

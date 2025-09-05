@@ -209,6 +209,8 @@ impl BinArray {
         let (m, n) = self.get_shape();
         let obst = option_obst.map_or_else(|| BinArray::from_coords(vec![], m, n), |x| x.clone());
         let free = obst.transform_invert();
+        let mut used: Vec<String> = vec![];
+
         let iterator = iproduct!(
             [0, 1, -1],
             [false, true],
@@ -227,11 +229,18 @@ impl BinArray {
                 if hflip {
                     arr = arr.transform_hflip(false);
                 }
-                // NOTE: No longer need this as anchor point will be shifted
-                // if hflip | vflip | (rot != 0) {
-                //     arr = arr.recentre();
-                // }
+                // recentre for comparison to ensure uniqueness of pieces
+                if hflip | vflip | (rot != 0) {
+                    arr = arr.recentre();
+                }
                 return arr;
+            })
+            // skip duplicate orientations
+            .filter(move |arr| {
+                let text = arr.to_string();
+                let dupl = used.contains(&text);
+                used.push(text);
+                return !dupl;
             })
             // by fixing an anchor point and viewing the non-occupied positions
             // get all possible shifts of the array
