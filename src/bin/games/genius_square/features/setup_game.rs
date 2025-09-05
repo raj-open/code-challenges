@@ -35,10 +35,23 @@ pub fn feature_setup_game(
     // Solve the problem
     println!("\nCompute solution ...\n");
     let rx = solve_brute_force(&board);
-    if let Ok((dt, board)) = rx.recv() {
-        println!("... completed in {:.2?}", dt);
-        println!("\nSolution:\n{}\n", board.pretty());
-    } else {
+    let mut n = 0;
+    #[allow(while_true)]
+    while true {
+        match rx.recv() {
+            Ok((dt, board)) => {
+                n += 1;
+                println!("... completed in {:.2?}", dt);
+                println!("\nSolution {n}:\n{}\n", board.pretty());
+                // NOTE: Currently stop on first solution
+                break;
+            },
+            Err(_) => {
+                break;
+            }
+        }
+    }
+    if n == 0 {
         println!("\n\x1b[91mNo solution found!\x1b[0m\n");
     }
 }
