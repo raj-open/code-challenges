@@ -8,7 +8,6 @@ use std::fmt::Debug;
 use std::fmt::Display;
 use std::fmt::Formatter;
 use std::fmt::Result;
-
 use std::ops::Add;
 use std::ops::Mul;
 use itertools::iproduct;
@@ -41,28 +40,31 @@ impl BinArray {
         Self {m, n, values}
     }
 
+    /// Gets the list of co-ordinates of the entries which are non-zero
     pub fn to_coords(&self) -> Vec<(usize, usize)> {
-        let mut coords: Vec<(usize, usize)> = vec![];
-        for (i, row) in self.values.rows().into_iter().enumerate() {
-            for (j, &val) in row.iter().enumerate() {
-                if val == 1 {
-                    coords.push((i, j));
-                }
-            }
-        }
-        return coords;
+        self.values
+            .indexed_iter()
+            .filter_map(|((i, j), &v)| if v == 0 { None } else { Some((i, j)) })
+            .collect()
+    }
+
+    /// Determines a single co-ordinate to be used as an anchor point.
+    /// If none exists, defaults to (0, 0).
+    pub fn get_anchor(&self) -> (usize, usize) {
+        self.values
+            .indexed_iter()
+            .find_or_first(|&(_, &v)| v != 0)
+            .map_or((0, 0), |((i, j), _)| (i, j))
     }
 
     pub fn get_weight(&self) -> isize {
-        let values = self.values.mapv(|x| if x == 0 {0} else {1});
-        let weight = values.sum();
-        return weight;
+        self.values
+            .mapv(|x| if x == 0 {0} else {1})
+            .sum()
     }
 
     pub fn get_coweight(&self) -> isize {
-        let covalues = self.values.mapv(|x| if x == 0 {1} else {0});
-        let coweight = covalues.sum();
-        return coweight;
+        self.transform_invert().get_weight()
     }
 
     pub fn get_shape(&self) -> (usize, usize) {
@@ -82,6 +84,14 @@ impl BinArray {
         // shift coords
         let result = self.transform_shift(-(i_min as isize), -(j_min as isize));
         return result;
+    }
+
+    /// Flips 0s and 1s
+    pub fn transform_invert(&self) -> Self {
+        let m = self.m;
+        let n = self.n;
+        let values = self.values.mapv(|x| if x == 0 {1} else {0});
+        return Self {m, n, values};
     }
 
     pub fn transform_shift(
