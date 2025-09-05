@@ -1,7 +1,6 @@
 /**
 !/.gitignore
 !/.gitattributes
-!/.funcignore
 
 # ----------------------------------------------------------------
 # ROOT
@@ -11,6 +10,7 @@
 !/LICENCE
 !/justfile
 !/Cargo.toml
+!/rustfmt.toml
 !/pyproject.toml
 !/*.lock
 !/.github

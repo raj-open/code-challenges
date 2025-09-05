@@ -83,7 +83,7 @@ jobs:
 
           touch .env && rm .env
           echo "
-          MAIN_MODULE="code-challenges"
+          MAIN_MODULE="CodeChallenges"
           PYTHON_PATH="python${{ env.PYTHON_VERSION }}"
           ARCHITECTURE="${{ env.ARCHITECTURE }}"
           RUST_BACKTRACE=full
@@ -106,14 +106,15 @@ jobs:
   # only performed if qa passes and option set
   deploy:
     name: DEPLOY
+    needs: 'qa'
+    # job only runs if deploy-checkbox is selected
+    if: ${{ github.event.inputs.deploy == 'true' }}
     runs-on: ${{ github.event.inputs.docker-image }}
     environment: "${{ github.event.inputs.environment }}"
     env: {}
 
     steps:
-      - uses: actions/checkout@v4.2.2
-
       - name: Message
         shell: bash
         run: |-
-          echo "Not yet implemented"
+          echo "::warning::Not yet implemented"

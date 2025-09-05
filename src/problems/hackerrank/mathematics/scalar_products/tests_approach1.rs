@@ -1,12 +1,14 @@
 /// ----------------------------------------------------------------
 /// IMPORTS
 /// ----------------------------------------------------------------
-use crate::problems::hackerrank::mathematics::scalar_products::approach1 as approach;
+
+use super::approach1 as approach;
 
 /// ----------------------------------------------------------------
 /// TESTS
 /// ----------------------------------------------------------------
 
+/// bundle of tests
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -21,5 +23,13 @@ mod tests {
     fn test_case2() {
         let result = approach::run(1, 100, 1000);
         assert_eq!(result, 50);
+    }
+
+    /// NOTE: This approach is inefficient and therefore skipped.
+    #[test]
+    #[ignore]
+    fn test_case_heavy_1() {
+        let result = approach::run(991, 11495481, 112259);
+        assert_eq!(result, 224515);
     }
 }

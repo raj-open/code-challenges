@@ -83,3 +83,128 @@ just tests-unit
 
 The `tests` folder contains integration tests for rust code,
 and unit tests for python code.
+
+## Execution of Binaries ##
+
+This repository contains some binaries (see [Cargo.toml](./Cargo.toml)):
+
+- `CodeChallenges`
+- `HackerRankMathematics`
+- `GeniusSquare`
+
+To run a binary call
+
+```bash
+# runs with optimisation (slower compile time)
+just run-rust {NAME_OF_BINARY} [flags]
+# runs without optimisation (faster compile time, slower run time)
+just dev-rust {NAME_OF_BINARY} [flags]
+```
+
+### Genius Squares ###
+
+The binary `GeniusSquare` solves instances of
+the _Smart Games_ puzzle [Genius Square](https://smarttoysandgames.co.uk/uk/genius-square).
+Usage is as follows:
+
+```bash
+# provides random instance of the puzzle and solves it:
+just run-rust GeniusSquare
+# ... with random seeding for repeatability:
+just run-rust GeniusSquare {Seed}
+# solves an instance of the game for a particular initialisation (roll of the dice):
+just run-rust GeniusSquare {Dice1} {Dice2} ... {Dice7}
+```
+
+e.g.
+
+```bash
+just run-rust GeniusSquare 1234 # with random seed
+just run-rust GeniusSquare B1 C4 D6 F1 F2 F3 F5 # with given initialisation
+```
+
+The `run` command builds and runs the binary.
+To perform this separately, use
+
+```bash
+just build-compile GeniusSquare
+```
+
+which produces the binary in [target/release/GeniusSquare](target/release/GeniusSquare).
+The standalone binary can be called as above:
+
+```bash
+./target/release/GeniusSquare
+# with random seed
+./target/release/GeniusSquare {Seed}
+./target/release/GeniusSquare 1234
+# with given initialisation
+./target/release/GeniusSquare {Dice1} {Dice2} ... {Dice7}
+./target/release/GeniusSquare B1 C4 D6 F1 F2 F3 F5
+```
+
+#### Example ####
+
+Calling
+
+```bash
+just run-rust GeniusSquare B1 C4 D6 F1 F2 F3 F5
+```
+
+results in
+
+```bash
+Roll: B1, C4, D6, F1, F2, F3, F5.
+
+
+Problem:
+╔═══╦═══╤═══╤═══╤═══╤═══╤═══╕
+║   ║ A │ B │ C │ D │ E │ F │
+╠═══╬═══╪═══╪═══╪═══╪═══╪═══╡
+║ 1 ║   │ ■ │   │   │   │ ■ │
+╠───╬───┼───┼───┼───┼───┼───┤
+║ 2 ║   │   │   │   │   │ ■ │
+╠───╬───┼───┼───┼───┼───┼───┤
+║ 3 ║   │   │   │   │   │ ■ │
+╠───╬───┼───┼───┼───┼───┼───┤
+║ 4 ║   │   │ ■ │   │   │   │
+╠───╬───┼───┼───┼───┼───┼───┤
+║ 5 ║   │   │   │   │   │ ■ │
+╠───╬───┼───┼───┼───┼───┼───┤
+║ 6 ║   │   │   │ ■ │   │   │
+╙───╨───┴───┴───┴───┴───┴───┘
+
+Compute solution...
+
+...completed in 725.18ms
+
+Solution:
+╔═══╦═══╤═══╤═══╤═══╤═══╤═══╕
+║   ║ A │ B │ C │ D │ E │ F │
+╠═══╬═══╪═══╪═══╪═══╪═══╪═══╡
+║ 1 ║ 1 │ ■ │ 2 │ 2 │ Z │ ■ │
+╠───╬───┼───┼───┼───┼───┼───┤
+║ 2 ║ L │ X │ X │ Z │ Z │ ■ │
+╠───╬───┼───┼───┼───┼───┼───┤
+║ 3 ║ L │ X │ X │ Z │ T │ ■ │
+╠───╬───┼───┼───┼───┼───┼───┤
+║ 4 ║ L │ L │ ■ │ T │ T │ T │
+╠───╬───┼───┼───┼───┼───┼───┤
+║ 5 ║ 4 │ 4 │ 4 │ 4 │ C │ ■ │
+╠───╬───┼───┼───┼───┼───┼───┤
+║ 6 ║ 3 │ 3 │ 3 │ ■ │ C │ C │
+╙───╨───┴───┴───┴───┴───┴───┘
+```
+
+in the console.
+The solver currently relies on a brute force tree-search algorithm,
+and provides solutions at the `Wizard` level,
+viz. no collisions occur and none of the pieces
+
+```text
+1 2 3 CC
+  2 3 C
+    3
+```
+
+are adjacent (in the sense of touching edges).
