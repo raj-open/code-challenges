@@ -44,7 +44,7 @@ pub fn feature_setup_game(
                 println!("... completed in {:.2?}", dt);
                 println!("\nSolution {n}:\n{}\n", board.pretty());
                 // NOTE: Currently stop on first solution
-                break;
+                // break;
             },
             Err(_) => {
                 break;
