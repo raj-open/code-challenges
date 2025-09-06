@@ -10,6 +10,8 @@ use std::thread::spawn;
 use std::sync::mpsc::channel;
 use std::sync::mpsc::Sender;
 use std::sync::mpsc::Receiver;
+use rayon::iter::IntoParallelIterator;
+use rayon::iter::ParallelIterator;
 
 use crate::models::constants::enums::ENUM_PIECES;
 use crate::models::constants::enums::EnumPiece;
@@ -63,7 +65,7 @@ fn recursion(
             pbar = &pbar0;
             let style = ProgressStyle::with_template("{spinner:.white} [{elapsed_precise}] [{wide_bar:.white}] {pos}/{len} ({eta_precise})");
             pbar.set_style(style.unwrap())
-        }
+        },
     }
 
     if n == 0 {
@@ -92,20 +94,24 @@ fn recursion(
         let kind = &kinds[0].clone();
         let kinds = &kinds[1..];
         let piece0 = Piece::from_kind(kind, None); // initialised piece
-        for piece in board.get_configurations(&piece0) {
-            pbar.inc(1);
-            let mut board_ = board.clone();
+        board.get_configurations(&piece0)
+            .collect::<Vec<Piece>>()
+            // DEV-NOTE: uses from Rayon
+            .into_par_iter()
+            .for_each(|piece| {
+                pbar.inc(1);
+                let mut board_ = board.clone();
 
-            // update the solution
-            board_.add_piece(&kind.clone(), &piece);
+                // update the solution
+                board_.add_piece(&kind.clone(), &piece);
 
-            // update the obstacle
-            board_.update_obstacle(&piece);
+                // update the obstacle
+                board_.update_obstacle(&piece);
 
-            // compute remainder of solution recursively
-            recursion(tx, &board_, Some(kinds), Some(&pbar));
-            let k = pbar.position();
-            pbar.set_position((k - 1).max(0));
-        }
+                // compute remainder of solution recursively
+                recursion(tx, &board_, Some(kinds), Some(&pbar));
+                let k = pbar.position();
+                pbar.set_position((k - 1).max(0));
+            });
     }
 }
