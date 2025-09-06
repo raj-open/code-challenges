@@ -27,21 +27,21 @@ pub const FACE2: &[&str] = &[
 ];
 
 pub const FACE1_FMT: &[&str] = &[
-    "\x1b[91,1mA\x1b[0m",
-    "\x1b[91,1mB\x1b[0m",
-    "\x1b[91,1mC\x1b[0m",
-    "\x1b[91,1mD\x1b[0m",
-    "\x1b[91,1mE\x1b[0m",
-    "\x1b[91,1mF\x1b[0m",
+    "\x1b[3mA\x1b[0m",
+    "\x1b[3mB\x1b[0m",
+    "\x1b[3mC\x1b[0m",
+    "\x1b[3mD\x1b[0m",
+    "\x1b[3mE\x1b[0m",
+    "\x1b[3mF\x1b[0m",
 ];
 
 pub const FACE2_FMT: &[&str] = &[
-    "\x1b[91,1m1\x1b[0m",
-    "\x1b[91,1m2\x1b[0m",
-    "\x1b[91,1m3\x1b[0m",
-    "\x1b[91,1m4\x1b[0m",
-    "\x1b[91,1m5\x1b[0m",
-    "\x1b[91,1m6\x1b[0m",
+    "\x1b[3m1\x1b[0m",
+    "\x1b[3m2\x1b[0m",
+    "\x1b[3m3\x1b[0m",
+    "\x1b[3m4\x1b[0m",
+    "\x1b[3m5\x1b[0m",
+    "\x1b[3m6\x1b[0m",
 ];
 
 pub const DICE: &[&[&str]] = &[

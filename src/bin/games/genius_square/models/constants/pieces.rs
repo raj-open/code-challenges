@@ -19,7 +19,7 @@ pub const BLOCK: &str = indoc! {"
 "};
 
 pub const SYMB_PIECE_1: &str = "1";
-pub const SYMB_FMT_PIECE_1: &str = "1";
+pub const SYMB_FMT_PIECE_1: &str = "\x1b[94;1;4m1\x1b[0m";
 pub const PIECE_1: &str = indoc! {"
     +.....
     ......
@@ -29,7 +29,7 @@ pub const PIECE_1: &str = indoc! {"
 "};
 
 pub const SYMB_PIECE_2: &str = "2";
-pub const SYMB_FMT_PIECE_2: &str = "2";
+pub const SYMB_FMT_PIECE_2: &str = "\x1b[1;4m2\x1b[0m";
 pub const PIECE_2: &str = indoc! {"
     ++....
     ......
@@ -39,7 +39,7 @@ pub const PIECE_2: &str = indoc! {"
 "};
 
 pub const SYMB_PIECE_3: &str = "3";
-pub const SYMB_FMT_PIECE_3: &str = "3";
+pub const SYMB_FMT_PIECE_3: &str = "\x1b[1;4m3\x1b[0m";
 pub const PIECE_3: &str = indoc! {"
     +++...
     ......
@@ -49,7 +49,7 @@ pub const PIECE_3: &str = indoc! {"
 "};
 
 pub const SYMB_PIECE_4: &str = "4";
-pub const SYMB_FMT_PIECE_4: &str = "4";
+pub const SYMB_FMT_PIECE_4: &str = "\x1b[90m4\x1b[0m";
 pub const PIECE_4: &str = indoc! {"
     ++++..
     ......
@@ -59,7 +59,7 @@ pub const PIECE_4: &str = indoc! {"
 "};
 
 pub const SYMB_PIECE_C: &str = "C";
-pub const SYMB_FMT_PIECE_C: &str = "C";
+pub const SYMB_FMT_PIECE_C: &str = "\x1b[95;1;4mC\x1b[0m";
 pub const PIECE_C: &str = indoc! {"
     ++....
     +.....
@@ -69,7 +69,7 @@ pub const PIECE_C: &str = indoc! {"
 "};
 
 pub const SYMB_PIECE_L: &str = "L";
-pub const SYMB_FMT_PIECE_L: &str = "L";
+pub const SYMB_FMT_PIECE_L: &str = "\x1b[96mL\x1b[0m";
 pub const PIECE_L: &str = indoc! {"
     ++....
     +.....
@@ -79,7 +79,7 @@ pub const PIECE_L: &str = indoc! {"
 "};
 
 pub const SYMB_PIECE_T: &str = "T";
-pub const SYMB_FMT_PIECE_T: &str = "T";
+pub const SYMB_FMT_PIECE_T: &str = "\x1b[93mT\x1b[0m";
 pub const PIECE_T: &str = indoc! {"
     +++...
     .+....
@@ -89,7 +89,7 @@ pub const PIECE_T: &str = indoc! {"
 "};
 
 pub const SYMB_PIECE_X: &str = "X";
-pub const SYMB_FMT_PIECE_X: &str = "X";
+pub const SYMB_FMT_PIECE_X: &str = "\x1b[92mX\x1b[0m";
 pub const PIECE_X: &str = indoc! {"
     ++....
     ++....
@@ -99,7 +99,7 @@ pub const PIECE_X: &str = indoc! {"
 "};
 
 pub const SYMB_PIECE_Z: &str = "Z";
-pub const SYMB_FMT_PIECE_Z: &str = "Z";
+pub const SYMB_FMT_PIECE_Z: &str = "\x1b[91mZ\x1b[0m";
 pub const PIECE_Z: &str = indoc! {"
     .++...
     ++....
