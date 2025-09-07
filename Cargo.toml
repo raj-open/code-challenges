@@ -55,6 +55,7 @@ lto = false # link-time optimisation
 # ]
 
 [dependencies]
+regex = {version = "^1.11.2"}
 serde = {version = "^1.0.219", features = ["derive"]}
 serde_json = {version = "^1.0.143"}
 dict_derive = {version = "^0.6.0" }
