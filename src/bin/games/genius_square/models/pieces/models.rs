@@ -11,7 +11,7 @@ use std::ops::AddAssign;
 use std::ops::Mul;
 use std::ops::MulAssign;
 
-use crate::models::arrays::BinArray;
+use crate::models::binary_arrays::BinArray;
 use crate::models::constants::EnumPiece;
 use crate::models::constants::GRID_HEIGHT;
 use crate::models::constants::GRID_WIDTH;
@@ -35,6 +35,10 @@ impl Piece {
         let kind = kind.clone();
         let positions = positions.unwrap_or_else(|| kind.get_positions());
         Self {kind, positions}
+    }
+
+    pub fn get_shape(&self) -> (usize, usize) {
+        self.positions.get_shape()
     }
 
     pub fn from_coords(

@@ -1,6 +1,6 @@
 /// Models used in game.
 
-pub mod arrays;
+pub mod binary_arrays;
 pub mod board;
 pub mod constants;
 pub mod dice;
