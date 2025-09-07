@@ -134,7 +134,9 @@ build-requirements-dependencies:
 
 build-compile module="${MAIN_MODULE}":
     @# cargo zigbuild --target-dir "target" --release --lib
-    @cargo zigbuild --target-dir "target" --release --bin "${MAIN_MODULE}"
+    @- rm "dist/{{module}}" 2> /dev/null
+    @cargo zigbuild --target-dir "target" --release --bin "{{module}}"
+    @cp "target/release/{{module}}" dist
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # TARGETS: execution
@@ -145,7 +147,7 @@ run-py module="main" *args="":
 
 run-rust module="${MAIN_MODULE}" *args="":
     @just build-compile "{{module}}"
-    @# "./target/release/{{module}}" {{args}}
+    @# "dist/{{module}}" {{args}}
     @cargo run --release --bin "{{module}}" {{args}}
 
 # --------------------------------
