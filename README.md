@@ -130,81 +130,93 @@ To perform this separately, use
 just build-compile GeniusSquare
 ```
 
-which produces the binary in [target/release/GeniusSquare](target/release/GeniusSquare).
+which copy the binary in [target/release/GeniusSquare](target/release/GeniusSquare) to the [dist](dist) folder.
 The standalone binary can be called as above:
 
 ```bash
-./target/release/GeniusSquare
+./dist/GeniusSquare
 # with random seed
-./target/release/GeniusSquare {Seed}
-./target/release/GeniusSquare 1234
+./dist/GeniusSquare {Seed}
+./dist/GeniusSquare 1234
 # with given initialisation
-./target/release/GeniusSquare {Dice1} {Dice2} ... {Dice7}
-./target/release/GeniusSquare B1 C4 D6 F1 F2 F3 F5
+./dist/GeniusSquare {Dice1} {Dice2} ... {Dice7}
+./dist/GeniusSquare B1 C4 D6 F1 F2 F3 F5
 ```
+
+#### Note on the algorithm ####
+
+The solver currently relies on a depth-first tree-search algorithm,
+with adaptive sorting, i.e. once pieces have been placed,
+the order of computation of the remaining pieces
+are locally sorted (in ascending order) based on the number of next possible moves.
 
 #### Example ####
 
 Calling
 
 ```bash
-just run-rust GeniusSquare B1 C4 D6 F1 F2 F3 F5
+just run-rust GeniusSquare B1 C4 D2 D6 E5 F1 F3
 ```
 
 results in
 
 ```bash
-Roll: B1, C4, D6, F1, F2, F3, F5.
-
+Roll: B1 C4 D2 D6 E5 F1 F3.
 
 Problem:
-╔═══╦═══╤═══╤═══╤═══╤═══╤═══╕
-║   ║ A │ B │ C │ D │ E │ F │
-╠═══╬═══╪═══╪═══╪═══╪═══╪═══╡
-║ 1 ║   │ ■ │   │   │   │ ■ │
-╠───╬───┼───┼───┼───┼───┼───┤
-║ 2 ║   │   │   │   │   │ ■ │
-╠───╬───┼───┼───┼───┼───┼───┤
-║ 3 ║   │   │   │   │   │ ■ │
-╠───╬───┼───┼───┼───┼───┼───┤
-║ 4 ║   │   │ ■ │   │   │   │
-╠───╬───┼───┼───┼───┼───┼───┤
-║ 5 ║   │   │   │   │   │ ■ │
-╠───╬───┼───┼───┼───┼───┼───┤
-║ 6 ║   │   │   │ ■ │   │   │
-╙───╨───┴───┴───┴───┴───┴───┘
+      ╔═══╦═══╦═══╦═══╦═══╦═══╗
+      ║ A ║ B ║ C ║ D ║ E ║ F ║
+      ╚═══╩═══╩═══╩═══╩═══╩═══╝
+╔═══╗     ┼───┼           ┼───┼
+║ 1 ║     │ ■ │           │ ■ │
+╠═══╣     ┼───┼   ┼───┼   ┼───┼
+║ 2 ║             │ ■ │
+╠═══╣             ┼───┼   ┼───┼
+║ 3 ║                     │ ■ │
+╠═══╣         ┼───┼       ┼───┼
+║ 4 ║         │ ■ │
+╠═══╣         ┼───┼   ┼───┼
+║ 5 ║                 │ ■ │
+╠═══╣             ┼───┼───┼
+║ 6 ║             │ ■ │
+╚═══╝             ┼───┼
 
-Compute solution...
+Compute solution ... found 33 solutions.
+Time for 1st solution:      3.929ms
+Average time per solution:  2.48506ms
+Total time:                 82.007ms
 
-...completed in 725.18ms
-
-Solution:
-╔═══╦═══╤═══╤═══╤═══╤═══╤═══╕
-║   ║ A │ B │ C │ D │ E │ F │
-╠═══╬═══╪═══╪═══╪═══╪═══╪═══╡
-║ 1 ║ 1 │ ■ │ 2 │ 2 │ Z │ ■ │
-╠───╬───┼───┼───┼───┼───┼───┤
-║ 2 ║ L │ X │ X │ Z │ Z │ ■ │
-╠───╬───┼───┼───┼───┼───┼───┤
-║ 3 ║ L │ X │ X │ Z │ T │ ■ │
-╠───╬───┼───┼───┼───┼───┼───┤
-║ 4 ║ L │ L │ ■ │ T │ T │ T │
-╠───╬───┼───┼───┼───┼───┼───┤
-║ 5 ║ 4 │ 4 │ 4 │ 4 │ C │ ■ │
-╠───╬───┼───┼───┼───┼───┼───┤
-║ 6 ║ 3 │ 3 │ 3 │ ■ │ C │ C │
-╙───╨───┴───┴───┴───┴───┴───┘
+Solution 1:
+      ╔═══╦═══╦═══╦═══╦═══╦═══╗
+      ║ A ║ B ║ C ║ D ║ E ║ F ║
+      ╚═══╩═══╩═══╩═══╩═══╩═══╝
+╔═══╗ ┼───┼───┼───┼───┼───┼───┼
+║ 1 ║ │ 2 │ ■ │ Z   Z │ C │ ■ │
+╠═══╣ ┼   ┼───┼   ┼───┼   ┼───┼
+║ 2 ║ │ 2 │ Z   Z │ ■ │ C   C │
+╠═══╣ ┼───┼───┼───┼───┼───┼───┼
+║ 3 ║ │ T   T   T │ X   X │ ■ │
+╠═══╣ ┼───┼   ┼───┼       ┼───┼
+║ 4 ║ │ 1 │ T │ ■ │ X   X │ L │
+╠═══╣ ┼───┼───┼───┼───┼───┼   ┼
+║ 5 ║ │ 4   4   4   4 │ ■ │ L │
+╠═══╣ ┼───┼───┼───┼───┼───┼   ┼
+║ 6 ║ │ 3   3   3 │ ■ │ L   L │
+╚═══╝ ┼───┼───┼───┼───┼───┼───┼
 ```
 
 in the console.
-The solver currently relies on a brute force tree-search algorithm,
-and provides solutions at the `Wizard` level,
+The algoirithm provides solutions at the `Wizard` level,
 viz. no collisions occur and none of the pieces
 
 ```text
-1 2 3 CC
-  2 3 C
-    3
+┌───┐ ┌───┐ ┌───┐ ┌───┬───┐
+│ 1 │ │ 2 │ │ 3 │ │ C   C │
+└───┘ ├   ┤ ├   ┤ ├   ┼───┘
+      │ 2 │ │ 3 │ │ C │
+      └───┘ ├   ┤ └───┘
+            │ 3 │
+            └───┘
 ```
 
 are adjacent (in the sense of touching edges).

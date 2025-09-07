@@ -2,12 +2,14 @@
 // IMPORTS
 // ----------------------------------------------------------------
 
-mod _core;
+use std::thread;
+use std::time::Duration;
 
 // ----------------------------------------------------------------
-// MAIN
+// METHODS
 // ----------------------------------------------------------------
 
-fn main() {
-    _core::strings::greet("world");
+#[allow(unused)]
+pub fn sleep_ms(time_ms: u64) {
+    thread::sleep(Duration::from_millis(time_ms));
 }

@@ -2,12 +2,10 @@
 // IMPORTS
 // ----------------------------------------------------------------
 
-mod _core;
+use std::time::Duration;
 
 // ----------------------------------------------------------------
-// MAIN
+// CONSTANTS
 // ----------------------------------------------------------------
 
-fn main() {
-    _core::strings::greet("world");
-}
+pub const TIMEOUT: Duration = Duration::from_secs(10);

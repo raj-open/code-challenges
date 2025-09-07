@@ -1,6 +1,6 @@
 [project]
 name = 'code_challenges'
-version = "0.2.0"
+version = "0.3.0"
 description = 'Code for challenges from various platforms'
 authors = [
     {name="raj-open", email="raj-open@users.noreply.github.com"},
@@ -34,16 +34,16 @@ dependencies = [
     # --------------------------------
     # compiler
     # --------------------------------
-    "pip>=25.1.1",
+    "pip>=25.2",
     # --------------------------------
     # models
     # --------------------------------
-    "pydantic>=2.11.4",
-    "pydantic-yaml>=1.4.0",
+    "pydantic>=2.11.7",
+    "pydantic-yaml>=1.6.0",
 ]
 
 [dependency-groups]
 dev = [
-    "ruff>=0.11.8",
-    "uv>=0.7.2",
+    "ruff>=0.12.12",
+    "uv>=0.8.15",
 ]

@@ -1,44 +1,49 @@
-/// ----------------------------------------------------------------
-/// IMPORTS
-/// ----------------------------------------------------------------
+// ----------------------------------------------------------------
+// IMPORTS
+// ----------------------------------------------------------------
 
 use indicatif::ProgressBar;
 use indicatif::ProgressStyle;
+use itertools::Itertools;
+use std::thread::spawn;
+use std::sync::mpsc::channel;
+use std::sync::mpsc::Sender;
+use std::sync::mpsc::Receiver;
+use rayon::iter::IntoParallelIterator;
+use rayon::iter::ParallelIterator;
 
-use crate::models::constants::enums::ENUM_PIECES;
-use crate::models::constants::enums::EnumPiece;
-use crate::models::pieces::models::Piece;
-use crate::models::board::models::GameBoard;
+use crate::models::constants::ENUM_PIECES;
+use crate::models::constants::EnumPiece;
+use crate::models::pieces::Piece;
+use crate::models::board::GameBoard;
 
-/// ----------------------------------------------------------------
-/// METHODS
-/// ----------------------------------------------------------------
+// ----------------------------------------------------------------
+// METHODS
+// ----------------------------------------------------------------
 
 /// Recursively solves by check all possibilities
-pub fn solve_brute_force(
-    board: &GameBoard,
-) -> GameBoard {
-    let obst = board.get_block().to_owned();
-    match recursion(board, &obst, None, None) {
-        Some(board_) => {
-            return board_;
-        },
-        None => {
-            return board.to_owned();
-        }
-    }
+pub fn solve_brute_force(board: &GameBoard, with_parallelisation: bool) -> Receiver<GameBoard> {
+    let (tx, rx) = channel::<GameBoard>();
+    let mut board = board.clone();
+    board.initialise_obstacle();
+    // DEV-NOTE: This is necessary to ensure that no locking occurs.
+    spawn(move || {
+        recursion(&tx, &board, None, None, with_parallelisation);
+    });
+    return rx;
 }
 
-/// ----------------------------------------------------------------
-/// AUXILIARY METHODS
-/// ----------------------------------------------------------------
+// ----------------------------------------------------------------
+// SECONDARY METHODS
+// ----------------------------------------------------------------
 
 fn recursion(
+    tx: &Sender<GameBoard>,
     board: &GameBoard,
-    obst: &Piece,
     option_kinds: Option<&[EnumPiece]>,
     option_pbar: Option<&ProgressBar>,
-) -> Option<GameBoard> {
+    with_parallelisation: bool,
+) {
     let kinds = option_kinds.unwrap_or(ENUM_PIECES);
     let n = kinds.len() as u64;
 
@@ -47,47 +52,79 @@ fn recursion(
     match option_pbar {
         Some(pbar_) => {
             pbar = &pbar_;
-        },
+        }
         None => {
             pbar = &pbar0;
-            let style = ProgressStyle::with_template("{spinner:.white} [{elapsed_precise}] [{wide_bar:.white}] {pos}/{len} ({eta_precise})");
+            let style = ProgressStyle::with_template(
+                "{spinner:.white} [{elapsed_precise}] [{wide_bar:.white}] {pos}/{len} ({eta_precise})",
+            );
             pbar.set_style(style.unwrap())
         }
     }
 
     if n == 0 {
         // if nothing left to solve, then return pieces, provide everything is filled
-        if obst.get_coweight() == 0 {
+        if board.get_obstacle_coweight() == 0 {
             pbar.finish_and_clear();
-            println!("...completed in {:.2?}", pbar.elapsed());
-            return Some(board.to_owned());
+            let message = board.to_owned();
+            tx.send(message).unwrap();
         }
     } else {
+        // find the next piece which has the fewest number of next possible moves
+        let kinds: Vec<EnumPiece> = kinds
+            .iter()
+            .map(|kind| {
+                let piece = Piece::from_kind(kind, None);
+                let iterator = board.get_configurations(&piece);
+                let n = iterator.count();
+                return (kind, n);
+            })
+            // sort by ascending values of size of possibilities
+            .sorted_by_key(|&(_, n)| n as isize)
+            .map(|(kind, _)| kind.clone())
+            .collect();
+
         // otherwise go through all permissible moves for next piece and then proceed recursively
         let kind = &kinds[0].clone();
         let kinds = &kinds[1..];
         let piece0 = Piece::from_kind(kind, None); // initialised piece
-        for piece in board.get_configurations(&piece0, &obst) {
-            pbar.inc(1);
-            // update the obstacle
-            let obst_ = obst.clone() + piece.clone();
-
-            // update the solution
-            let mut board_ = board.clone();
-            board_.add_piece(&kind.clone(), &piece);
-
-            // compute remainder of solution recursively
-            match recursion(&mut board_, &obst_, Some(kinds), Some(&pbar)) {
-                Some(board_) => {
-                    return Some(board_);
-                },
-                None => {
-                    let k = pbar.position();
-                    pbar.set_position((k - 1).max(0));
-                },
-            }
+        if with_parallelisation {
+            board
+                .get_configurations(&piece0)
+                .collect::<Vec<Piece>>()
+                // DEV-NOTE: uses from Rayon
+                .into_par_iter()
+                .for_each(|piece| {
+                    recursion_body(tx, board, &piece, kinds, kind, pbar, with_parallelisation);
+                })
+        } else {
+            board.get_configurations(&piece0).for_each(|piece| {
+                recursion_body(tx, board, &piece, kinds, kind, pbar, with_parallelisation);
+            })
         }
     }
+}
 
-    return None;
+fn recursion_body(
+    tx: &Sender<GameBoard>,
+    board: &GameBoard,
+    piece: &Piece,
+    kinds: &[EnumPiece],
+    kind: &EnumPiece,
+    pbar: &ProgressBar,
+    with_parallelisation: bool,
+) {
+    pbar.inc(1);
+    let mut board_ = board.clone();
+
+    // update the solution
+    board_.add_piece(&kind.clone(), &piece);
+
+    // update the obstacle
+    board_.update_obstacle(&piece);
+
+    // compute remainder of solution recursively
+    recursion(tx, &board_, Some(kinds), Some(&pbar), with_parallelisation);
+    let k = pbar.position();
+    pbar.set_position((k - 1).max(0));
 }

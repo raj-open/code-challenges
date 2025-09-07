@@ -1,6 +1,6 @@
-/// ----------------------------------------------------------------
-/// IMPORTS
-/// ----------------------------------------------------------------
+// ----------------------------------------------------------------
+// IMPORTS
+// ----------------------------------------------------------------
 
 use ndarray::Array2;
 use ndarray::s as slice;
@@ -9,13 +9,15 @@ use std::fmt::Display;
 use std::fmt::Formatter;
 use std::fmt::Result;
 use std::ops::Add;
+use std::ops::AddAssign;
 use std::ops::Mul;
+use std::ops::MulAssign;
 use itertools::iproduct;
 use itertools::Itertools;
 
-/// ----------------------------------------------------------------
-/// STRUCTS
-/// ----------------------------------------------------------------
+// ----------------------------------------------------------------
+// STRUCTS
+// ----------------------------------------------------------------
 
 #[derive(Clone, Debug)]
 pub struct BinArray {
@@ -24,28 +26,30 @@ pub struct BinArray {
     values: Array2<u8>,
 }
 
-/// ----------------------------------------------------------------
-/// IMPLEMENTATIONS
-/// ----------------------------------------------------------------
+// ----------------------------------------------------------------
+// IMPLEMENTATIONS
+// ----------------------------------------------------------------
 
 impl BinArray {
-    pub fn from_coords(
-        coords: Vec<(usize, usize)>,
-        m: usize,
-        n: usize,
-    ) -> Self {
+    pub fn from_coords(coords: Vec<(usize, usize)>, m: usize, n: usize) -> Self {
         let mut values = Array2::<u8>::zeros((m, n));
         for coord in coords {
             values[[coord.0, coord.1]] = 1;
         }
-        Self {m, n, values}
+        Self { m, n, values }
     }
 
     /// Gets the list of co-ordinates of the entries which are non-zero
     pub fn to_coords(&self) -> Vec<(usize, usize)> {
         self.values
             .indexed_iter()
-            .filter_map(|((i, j), &v)| if v == 0 { None } else { Some((i, j)) })
+            .filter_map(|((i, j), &v)| {
+                if v == 0 {
+                    None
+                } else {
+                    Some((i, j))
+                }
+            })
             .collect()
     }
 
@@ -60,7 +64,13 @@ impl BinArray {
 
     pub fn get_weight(&self) -> isize {
         self.values
-            .mapv(|x| if x == 0 {0} else {1})
+            .mapv(|x| {
+                if x == 0 {
+                    0
+                } else {
+                    1
+                }
+            })
             .sum()
     }
 
@@ -91,19 +101,21 @@ impl BinArray {
     pub fn transform_invert(&self) -> Self {
         let m = self.m;
         let n = self.n;
-        let values = self.values.mapv(|x| if x == 0 {1} else {0});
-        return Self {m, n, values};
+        let values = self.values.mapv(|x| {
+            if x == 0 {
+                1
+            } else {
+                0
+            }
+        });
+        return Self { m, n, values };
     }
 
-    pub fn transform_shift(
-        &self,
-        di: isize,
-        dj: isize,
-    ) -> Self {
+    pub fn transform_shift(&self, di: isize, dj: isize) -> Self {
         // create blank 3 x 3 meta block
         let m = self.m;
         let n = self.n;
-        let mut slate = Array2::<u8>::zeros((3*m, 3*n));
+        let mut slate = Array2::<u8>::zeros((3 * m, 3 * n));
 
         // slot in values in location shifted from the middle
         let i0 = self.m as isize + di;
@@ -119,15 +131,15 @@ impl BinArray {
         let j0 = self.n;
         let j1 = self.n + j0;
         let values = slate.slice_mut(slice![i0..i1, j0..j1]).to_owned();
-        let result = Self {m, n, values};
+        let result = Self { m, n, values };
         return result;
     }
 
-    pub fn transform_hflip(&self, recentre: bool) -> Self{
+    pub fn transform_hflip(&self, recentre: bool) -> Self {
         let m = self.m;
         let n = self.n;
         let values = self.values.slice(slice![.., ..;-1]).to_owned();
-        let mut result = Self {m, n, values};
+        let mut result = Self { m, n, values };
         if recentre {
             result = result.recentre();
         }
@@ -138,19 +150,18 @@ impl BinArray {
         let m = self.m;
         let n = self.n;
         let values = self.values.slice(slice![..;-1, ..]).to_owned();
-        let mut result = Self {m, n, values};
+        let mut result = Self { m, n, values };
         if recentre {
             result = result.recentre();
         }
         return result;
-
     }
 
     pub fn transform_transpose(&self, recentre: bool) -> Self {
         let m = self.m;
         let n = self.n;
         let values = self.values.t().to_owned();
-        let mut result = Self {m, n, values};
+        let mut result = Self { m, n, values };
         if recentre {
             result = result.recentre();
         }
@@ -161,10 +172,10 @@ impl BinArray {
         match k {
             1 => {
                 return self.transform_transpose(false).transform_vflip(recentre);
-            },
+            }
             -1 => {
                 return self.transform_vflip(false).transform_transpose(recentre);
-            },
+            }
             _ => {
                 return self.clone();
             }
@@ -182,10 +193,8 @@ impl BinArray {
         let arr3 = arr.transform_shift(0, -1);
         let arr4 = arr.transform_shift(0, 1);
         arr = arr + arr1 + arr2 + arr3 + arr4;
-        let values = arr.values
-            .slice(slice![1..-1, 1..-1])
-            .to_owned();
-        let result = Self {m, n, values};
+        let values = arr.values.slice(slice![1..-1, 1..-1]).to_owned();
+        let result = Self { m, n, values };
         return result;
     }
 
@@ -200,18 +209,13 @@ impl BinArray {
     /// and provided
     ///
     /// - no collisions occur with an optional obstacle.
-    pub fn get_configurations(
-        &self,
-        option_obst: Option<&BinArray>,
-    ) -> impl Iterator<Item = Self> {
+    pub fn get_configurations(&self, option_obst: Option<&BinArray>) -> impl Iterator<Item = Self> {
         let (m, n) = self.get_shape();
         let obst = option_obst.map_or_else(|| BinArray::from_coords(vec![], m, n), |x| x.clone());
         let free = obst.transform_invert();
-        let iterator = iproduct!(
-            [0, 1, -1],
-            [false, true],
-            [false, true],
-        )
+        let mut used: Vec<String> = vec![];
+
+        let iterator = iproduct!([0, 1, -1], [false, true], [false, true],)
             // iterate through all orientations
             .map(|(rot, vflip, hflip)| {
                 // recover original
@@ -225,11 +229,18 @@ impl BinArray {
                 if hflip {
                     arr = arr.transform_hflip(false);
                 }
-                // NOTE: No longer need this as anchor point will be shifted
-                // if hflip | vflip | (rot != 0) {
-                //     arr = arr.recentre();
-                // }
+                // recentre for comparison to ensure uniqueness of pieces
+                if hflip | vflip | (rot != 0) {
+                    arr = arr.recentre();
+                }
                 return arr;
+            })
+            // skip duplicate orientations
+            .filter(move |arr| {
+                let text = arr.to_string();
+                let dupl = used.contains(&text);
+                used.push(text);
+                return !dupl;
             })
             // by fixing an anchor point and viewing the non-occupied positions
             // get all possible shifts of the array
@@ -282,7 +293,13 @@ impl Add for BinArray {
         let n = self.n;
         let mut values = self.values.to_owned() + other.values.to_owned();
         values = values.mapv(|x| x.min(1));
-        return Self {m, n, values};
+        return Self { m, n, values };
+    }
+}
+
+impl AddAssign for BinArray {
+    fn add_assign(&mut self, other: Self) {
+        *self = self.to_owned() + other;
     }
 }
 
@@ -293,6 +310,12 @@ impl Mul for BinArray {
         let m = self.m;
         let n = self.n;
         let values = self.values.to_owned() * other.values.to_owned();
-        return Self {m, n, values};
+        return Self { m, n, values };
+    }
+}
+
+impl MulAssign for BinArray {
+    fn mul_assign(&mut self, other: Self) {
+        *self = self.to_owned() * other;
     }
 }
