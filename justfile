@@ -101,6 +101,9 @@ _rust_path_to_test_module path:
 setup:
     @echo "TASK: SETUP"
     @- cp -n "templates/template.env" ".env"
+    @rustup toolchain install stable
+    @rustup update
+    @rustup override set stable
 
 build:
     @just build-venv
@@ -203,7 +206,9 @@ tests-unit-optimised *args:
 # --------------------------------
 
 prettify:
-    @cargo fmt --verbose
+    @rustup override set nightly
+    @- cargo +nightly fmt --all --verbose -- --config-path rustfmt.toml
+    @rustup override set stable
 
 prettify-dry:
     @echo "Not yet implemented"
