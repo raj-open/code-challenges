@@ -20,11 +20,12 @@ pub fn feature_initialise_game(
     option_roll: Option<Vec<String>>,
 ) ->  GameBoard {
     // Roll the dice
-    let faces = option_roll.unwrap_or_else(|| roll_dice(rng));
+    let mut faces = option_roll.unwrap_or_else(|| roll_dice(rng));
+    faces.sort();
     let dice: Vec<Die> = faces.iter()
         .map(|face| Die::from_string(face))
         .collect();
-    println!("\nRoll: {}.", faces.join(", "));
+    println!("\nRoll: {}", faces.join(" "));
 
     // Establish the problem
     let coords = dice.iter().map(|die| die.to_coords()).collect();
