@@ -1,17 +1,18 @@
-/// ----------------------------------------------------------------
-/// IMPORTS
-/// ----------------------------------------------------------------
+// ----------------------------------------------------------------
+// IMPORTS
+// ----------------------------------------------------------------
 
 use std::fmt::Debug;
 use std::fmt::Display;
 use std::fmt::Formatter;
 use std::fmt::Result;
 
-use crate::models::constants::dice::*;
+use crate::models::constants::FACE1;
+use crate::models::constants::FACE2;
 
-/// ----------------------------------------------------------------
-/// STRUCTS
-/// ----------------------------------------------------------------
+// ----------------------------------------------------------------
+// STRUCTS
+// ----------------------------------------------------------------
 
 #[derive(Copy, Clone, Debug)]
 pub struct Die {
@@ -19,9 +20,9 @@ pub struct Die {
     j: usize,
 }
 
-/// ----------------------------------------------------------------
-/// IMPLEMENTATIONS
-/// ----------------------------------------------------------------
+// ----------------------------------------------------------------
+// IMPLEMENTATIONS
+// ----------------------------------------------------------------
 
 impl Die {
     pub fn from_string(face: &String) -> Die {
@@ -30,10 +31,7 @@ impl Die {
         let char2 = chars.get(1).unwrap();
         let index1 = FACE1.iter().position(|x| x == char1).unwrap();
         let index2 = FACE2.iter().position(|x| x == char2).unwrap();
-        return Die {
-            i: index2,
-            j: index1,
-        }
+        return Die { i: index2, j: index1 };
     }
 
     pub fn to_string(&self) -> String {
@@ -44,12 +42,12 @@ impl Die {
 
     #[allow(unused)]
     pub fn from_coords(i: usize, j: usize) -> Die {
-        return Die {i, j}
+        return Die { i, j };
     }
 
     #[allow(unused)]
     pub fn to_coords(&self) -> (usize, usize) {
-        return (self.i, self.j)
+        return (self.i, self.j);
     }
 }
 
