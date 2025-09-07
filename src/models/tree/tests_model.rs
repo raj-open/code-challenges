@@ -53,7 +53,8 @@ mod tests {
             ├─── alice: 23
             ╰─── bob: 24
         "#
-        ).to_string();
+        )
+        .to_string();
         assert_eq!(t.to_string(), expected);
     }
 
@@ -94,7 +95,8 @@ mod tests {
             │  ╰─── _: 3
             ╰─── bob: 24
         "#
-        ).to_string();
+        )
+        .to_string();
         assert_eq!(t.to_string(), expected);
     }
 }

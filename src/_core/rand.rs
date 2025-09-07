@@ -23,9 +23,9 @@ pub fn seed_rng(x: Option<String>) -> ChaCha8Rng {
             // create RNG
             let rng = ChaCha8Rng::from_seed(seed);
             return rng;
-        },
+        }
         None => {
             return ChaCha8Rng::from_os_rng();
-        },
+        }
     }
 }

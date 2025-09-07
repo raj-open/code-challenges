@@ -38,16 +38,12 @@ pub fn join_multiline_strings(
     sep_block: Option<&String>,
     sep_single: &str,
 ) -> String {
-
     // split blocks into lines and pad to ensure consistency of widths
     let blocks: Vec<Vec<String>> = blocks.iter().map(pad_widths).collect();
 
     // pad to ensure consistencey of heights
     let height = blocks.iter().map(|lines| lines.len()).max().unwrap_or(0);
-    let blocks: Vec<Vec<String>> = blocks
-        .iter()
-        .map(|lines| pad_height(lines, height))
-        .collect();
+    let blocks: Vec<Vec<String>> = blocks.iter().map(|lines| pad_height(lines, height)).collect();
 
     // determine a separator
     let sep_block0 = ([sep_single].repeat(height)).join("\n");
@@ -56,14 +52,11 @@ pub fn join_multiline_strings(
     let sep_block = pad_height(&sep_block, height);
 
     // join blocks line-wise
-    let result = (0.. height)
+    let result = (0..height)
         .map(|i| {
             let empty = "".to_string();
             let sep = sep_block.get(i).unwrap_or(&empty);
-            blocks
-            .iter()
-            .map(|lines| lines.get(i).unwrap_or(&empty))
-            .join(sep)
+            blocks.iter().map(|lines| lines.get(i).unwrap_or(&empty)).join(sep)
         })
         .join("\n");
 
@@ -87,10 +80,7 @@ fn pad_widths(text: &String) -> Vec<String> {
 }
 
 /// Splits a string into lines and pads to ensure uniformity of widths
-fn pad_height(
-    lines: &Vec<String>,
-    height: usize,
-) -> Vec<String> {
+fn pad_height(lines: &Vec<String>, height: usize) -> Vec<String> {
     let n = lines.len();
     if n >= height {
         return lines.clone();

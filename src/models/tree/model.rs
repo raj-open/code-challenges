@@ -121,7 +121,11 @@ where
         let n = self.num_children();
         for (k, child) in self.children.iter().enumerate() {
             let is_final = k == n - 1;
-            let connector = if child.has_children() { "╮ " } else { "─ " };
+            let connector = if child.has_children() {
+                "╮ "
+            } else {
+                "─ "
+            };
             let sep_ = if is_final {
                 format!("╰──{}", connector)
             } else {

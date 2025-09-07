@@ -48,6 +48,7 @@
 /// O(n) + O(n) = O(n)
 /// ```
 
+#[rustfmt::skip]
 // ----------------------------------------------------------------
 // IMPORTS
 // ----------------------------------------------------------------
@@ -96,16 +97,13 @@ pub fn run(c: i64, m: i64, n: usize) -> usize {
     let matrix_g = matrix_f.pow2();
 
     // compute system[k] = (_, G^k * v0)
-    let system = DynamicalSystem {
-        evolution: matrix_g,
-        state: v0,
-    };
+    let system = DynamicalSystem { evolution: matrix_g, state: v0 };
     let n_max = 2 * (n as i64);
     let system_powers = compute_powers(&system, n_max);
 
     // compute all powers of G:
     let mut values: HashSet<i64> = HashSet::new();
-    for k in 3.. n_max {
+    for k in 3..n_max {
         // k = i + j
         // compute v := G^k * v_0
         let system_pow_k = system_powers.get(&(k as i64)).unwrap();
@@ -130,7 +128,7 @@ where
     let mut results: HashMap<i64, T> = HashMap::new();
     let mut x_pow_2_pow = x.clone();
     results.insert(0, x_pow_2_pow.clone());
-    (1.. n).for_each(|k| {
+    (1..n).for_each(|k| {
         x_pow_2_pow = x_pow_2_pow.pow2();
         results.insert(k as i64, x_pow_2_pow.clone());
     });
@@ -166,18 +164,15 @@ where
     let x_pow_2_pow = power_of_2_powers(x, l);
 
     // now compute along levels of a binary tree
-    let powers = (0.. l).fold(
-        powers,
-        |mut prev, k| {
-            let num_leaves = prev.len() as i64;
-            let x_pow_2_pow_k = x_pow_2_pow.get(&k).unwrap().clone();
-            for (&j, value) in prev.clone().iter() {
-                let value_ = x_pow_2_pow_k.clone() * value.clone();
-                prev.insert(j + num_leaves, value_);
-            };
-            return prev;
+    let powers = (0..l).fold(powers, |mut prev, k| {
+        let num_leaves = prev.len() as i64;
+        let x_pow_2_pow_k = x_pow_2_pow.get(&k).unwrap().clone();
+        for (&j, value) in prev.clone().iter() {
+            let value_ = x_pow_2_pow_k.clone() * value.clone();
+            prev.insert(j + num_leaves, value_);
         }
-    );
+        return prev;
+    });
 
     return powers;
 }
@@ -299,14 +294,7 @@ where
 
 impl<T> Add for Modulo<T>
 where
-    T: Display
-        + Copy
-        + Clone
-        + PartialEq
-        + Eq
-        + NumberLike<T>
-        + Add<Output = T>
-        + Rem<Output = T>,
+    T: Display + Copy + Clone + PartialEq + Eq + NumberLike<T> + Add<Output = T> + Rem<Output = T>,
 {
     type Output = Self;
 
@@ -319,14 +307,7 @@ where
 
 impl<T> Mul for Modulo<T>
 where
-    T: Display
-        + Copy
-        + Clone
-        + PartialEq
-        + Eq
-        + NumberLike<T>
-        + Mul<Output = T>
-        + Rem<Output = T>,
+    T: Display + Copy + Clone + PartialEq + Eq + NumberLike<T> + Mul<Output = T> + Rem<Output = T>,
 {
     type Output = Self;
 
@@ -390,12 +371,7 @@ where
     T: Copy + Mul<Output = T> + Add<Output = T>,
 {
     fn mul_vector(&self, u: &Vector2<T>) -> Vector2<T> {
-        Vector2(
-            [
-                (self.a * u.get(0) + self.b * u.get(1)),
-                (self.b * u.get(0) + self.d * u.get(1)),
-            ],
-        )
+        Vector2([(self.a * u.get(0) + self.b * u.get(1)), (self.b * u.get(0) + self.d * u.get(1))])
     }
 }
 
@@ -490,11 +466,7 @@ where
 
 impl<T> BinaryPowers for DynamicalSystem<T>
 where
-    T: Copy
-        + Clone
-        + Add<Output = T>
-        + Mul<Output = T>
-        + BinaryPowers,
+    T: Copy + Clone + Add<Output = T> + Mul<Output = T> + BinaryPowers,
 {
     fn zerolike(&self) -> Self {
         Self {

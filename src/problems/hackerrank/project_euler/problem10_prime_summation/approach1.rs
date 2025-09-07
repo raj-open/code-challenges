@@ -4,6 +4,7 @@
 /// Then efficiently computes the cumulutative sum of primes
 /// below certain integers.
 
+#[rustfmt::skip]
 // ----------------------------------------------------------------
 // IMPORTS
 // ----------------------------------------------------------------
