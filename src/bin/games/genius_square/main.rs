@@ -12,7 +12,8 @@ mod models;
 mod features;
 
 use models::constants::dice::NUM_DICE;
-use features::setup_game::feature_setup_game;
+use features::feature_initialise_game;
+use features::feature_solve_game;
 
 /// ----------------------------------------------------------------
 /// MAIN
@@ -24,5 +25,6 @@ fn main() {
     let option_seed = if args.len() >= 1 { Some(args[args.len() - 1].clone()) } else { None };
     let mut rng = _core::rand::seed_rng(option_seed);
     welcome_screen();
-    feature_setup_game(&mut rng, option_roll);
+    let board = feature_initialise_game(&mut rng, option_roll);
+    feature_solve_game(&board);
 }
