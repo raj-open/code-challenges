@@ -8,6 +8,7 @@ use std::fmt::Display;
 use std::fmt::Formatter;
 use std::fmt::Result;
 use std::collections::HashMap;
+use std::ops::AddAssign;
 
 use general::_core::strings::join_multiline_strings;
 
@@ -18,6 +19,7 @@ use crate::models::constants::GRID_HEIGHT;
 use crate::models::constants::GRID_WIDTH;
 use crate::models::constants::NON_ADJACENT;
 use crate::models::pieces::Piece;
+use crate::models::binary_arrays::BinGrid;
 
 /// ----------------------------------------------------------------
 /// STRUCTS
@@ -43,6 +45,10 @@ impl GameBoard {
         let obstacle_basic = block.clone();
         let obstacle_dithered = block.clone();
         return Self {block, obstacle_basic, obstacle_dithered,  pieces}
+    }
+
+    pub fn get_shape(&self) -> (usize, usize) {
+        self.block.get_shape()
     }
 
     pub fn add_piece(&mut self, symb: &EnumPiece, piece: &Piece) {
@@ -105,52 +111,40 @@ impl GameBoard {
     }
 
     pub fn pretty(&self) -> String {
-        let field = self.to_array_of_strings(true);
+        let (m, n) = self.get_shape();
 
-        fn create_box(
-            char: &String,
-            ulcorner: &str,
-            urcorner: &str,
-            blcorner: &str,
-            brcorner: &str,
-            hbar: &str,
-            vbar: &str,
-        ) -> String {
-            let top = format!("{ulcorner}{hbar}{hbar}{hbar}{urcorner}");
-            let mid = format!("{vbar} {char} {vbar}");
-            let bot = format!("{blcorner}{hbar}{hbar}{hbar}{brcorner}");
-            format!("{top}\n{mid}\n{bot}")
-        }
+        let space = "      ";
+        let end1 = format!("{space}\u{02554}\u{02550}\n{space}\u{02551} \n{space}\u{0255A}\u{02550}");
+        let end2 = format!("\u{02550}\u{02557}\n \u{02551}\n\u{02550}\u{0255D}");
+        let blocks: Vec<String> = FACE1_FMT.iter().map(|&x| format!("\u{02550}\n{x}\n\u{02550}")).collect();
+        let sep = format!("\u{02550}\u{02566}\u{02550}\n \u{02551} \n\u{02550}\u{02569}\u{02550}");
+        let xlabels = join_multiline_strings(&blocks, Some(&sep), "");
+        let xlabels = join_multiline_strings(&[end1, xlabels, end2].to_vec(), None, "");
 
-        fn create_box_head(char: &str) -> String {
-            create_box(&char.to_string(), "\u{02554}", "\u{02557}", "\u{0255A}", "\u{0255D}", "\u{02550}", "\u{02551}")
-        }
+        let end1 = format!("\u{02554}\u{02550}\u{02550}\u{02550}\u{02557}");
+        let end2 = format!("\u{0255A}\u{02550}\u{02550}\u{02550}\u{0255D}");
+        let blocks: Vec<String> = FACE2_FMT.iter().map(|&x| format!("\u{02551} {x} \u{02551}")).collect();
+        let sep = format!("\n\u{02560}\u{02550}\u{02550}\u{02550}\u{02563}\n");
+        let ylabels = blocks.join(&sep);
+        let ylabels = [end1, ylabels, end2].join("\n");
 
-        #[allow(unused)]
-        fn create_box_body(char: &String) -> String {
-            create_box(char, "\u{0250C}", "\u{02510}", "\u{02514}", "\u{02518}", "\u{2500}", "\u{2502}")
-        }
+        let mut grid = BinGrid::new(m, n);
+        let symb = self.block.get_symb_fmt();
+        self.block.to_coords().iter().for_each(|&(i, j)| {
+            grid += BinGrid::from_coord(&symb, i, j, m, n);
+        });
 
-        let corner = create_box(&" ".to_string(), " ", " ", " ", " ", " ", " ");
-        let mut head_blocks: Vec<String> = FACE1_FMT.iter().map(|&x| x).map(create_box_head).collect();
-        head_blocks.insert(0, corner);
-        let head = join_multiline_strings(&head_blocks, " ");
+        self.pieces.values().for_each(|piece| {
+            let symb = piece.get_symb_fmt();
+            let pos = piece.get_positions();
+            grid += BinGrid::from_array(&symb, pos);
+        });
 
-        let middle = field.rows()
-            .into_iter()
-            .enumerate()
-            .map(|(i, row)| {
-                let char = FACE2_FMT[i];
-                let block = create_box_head(char);
-                let mut blocks: Vec<String> = row.iter().map(create_box_body).collect();
-                blocks.insert(0, block);
-                let line = join_multiline_strings(&blocks, " ");
-                return line;
-            })
-            .collect::<Vec<String>>()
-            .join("\n");
+        let middle = grid.to_string();
 
-        let text = format!("{head}\n{middle}");
+        let middle = join_multiline_strings(&[ylabels.to_owned(), middle].to_vec(), None, " ");
+
+        let text = format!("{xlabels}\n{middle}");
 
         return text;
     }
@@ -158,7 +152,7 @@ impl GameBoard {
     fn to_array_of_strings(&self, formatted: bool) -> Array2<String> {
         let m = GRID_HEIGHT;
         let n = GRID_WIDTH;
-        let mut trace: Array2<String> = Array2::from_elem((m, n), " ".to_string());
+        let mut trace = Array2::from_elem((m, n), " ".to_string());
         let piece = self.get_block();
         for (i, j) in piece.to_coords() {
             let alpha = if formatted { piece.get_symb_fmt() } else { piece.get_symb() };
