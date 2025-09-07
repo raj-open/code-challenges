@@ -118,19 +118,19 @@ impl GameBoard {
         let (m, n) = self.get_shape();
 
         let space = "      ";
-        #[rustfmt::skip]
-        let end1 = format!("{space}\u{02554}\u{02550}\n{space}\u{02551} \n{space}\u{0255A}\u{02550}");
+        let end1 =
+            format!("{space}\u{02554}\u{02550}\n{space}\u{02551} \n{space}\u{0255A}\u{02550}");
         let end2 = format!("\u{02550}\u{02557}\n \u{02551}\n\u{02550}\u{0255D}");
-        #[rustfmt::skip]
-        let blocks: Vec<String> = FACE1_FMT.iter().map(|&x| format!("\u{02550}\n{x}\n\u{02550}")).collect();
+        let blocks: Vec<String> =
+            FACE1_FMT.iter().map(|&x| format!("\u{02550}\n{x}\n\u{02550}")).collect();
         let sep = format!("\u{02550}\u{02566}\u{02550}\n \u{02551} \n\u{02550}\u{02569}\u{02550}");
         let xlabels = join_multiline_strings(&blocks, Some(&sep), "");
         let xlabels = join_multiline_strings(&[end1, xlabels, end2].to_vec(), None, "");
 
         let end1 = format!("\u{02554}\u{02550}\u{02550}\u{02550}\u{02557}");
         let end2 = format!("\u{0255A}\u{02550}\u{02550}\u{02550}\u{0255D}");
-        #[rustfmt::skip]
-        let blocks: Vec<String> = FACE2_FMT.iter().map(|&x| format!("\u{02551} {x} \u{02551}")).collect();
+        let blocks: Vec<String> =
+            FACE2_FMT.iter().map(|&x| format!("\u{02551} {x} \u{02551}")).collect();
         let sep = format!("\n\u{02560}\u{02550}\u{02550}\u{02550}\u{02563}\n");
         let ylabels = blocks.join(&sep);
         let ylabels = [end1, ylabels, end2].join("\n");

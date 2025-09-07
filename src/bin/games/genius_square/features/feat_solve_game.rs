@@ -31,8 +31,11 @@ pub fn feature_solve_game(board: &GameBoard) -> Option<GameBoard> {
     }
 
     let dt_total = time.elapsed().unwrap();
-    #[rustfmt::skip]
-    let dt_mean: Duration = if n > 0 { dt_total / n } else { Duration::from_secs(0) };
+    let dt_mean: Duration = if n > 0 {
+        dt_total / n
+    } else {
+        Duration::from_secs(0)
+    };
     let dt = dt.unwrap_or(dt_total);
     match solution {
         // DEV-NOTE: use 'ref' to borrow

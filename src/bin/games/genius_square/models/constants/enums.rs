@@ -30,7 +30,6 @@ pub enum EnumPiece {
     Z,
 }
 
-#[rustfmt::skip]
 pub const ENUM_PIECES: &[EnumPiece] = &[
     EnumPiece::Symb1,
     EnumPiece::Symb2,
@@ -43,13 +42,8 @@ pub const ENUM_PIECES: &[EnumPiece] = &[
     EnumPiece::Z,
 ];
 
-#[rustfmt::skip]
-pub const NON_ADJACENT: &[EnumPiece] = &[
-    EnumPiece::Symb1,
-    EnumPiece::Symb2,
-    EnumPiece::Symb3,
-    EnumPiece::C,
-];
+pub const NON_ADJACENT: &[EnumPiece] =
+    &[EnumPiece::Symb1, EnumPiece::Symb2, EnumPiece::Symb3, EnumPiece::C];
 
 // ----------------------------------------------------------------
 // IMPLEMENTATIONS

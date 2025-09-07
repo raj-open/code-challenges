@@ -3,12 +3,11 @@
 /// Computes Primes using the Sieve of Eratosthenes.
 /// Then efficiently computes the cumulutative sum of primes
 /// below certain integers.
+//
 
-#[rustfmt::skip]
 // ----------------------------------------------------------------
 // IMPORTS
 // ----------------------------------------------------------------
-
 use std::io;
 use std::io::BufRead;
 use std::clone::Clone;

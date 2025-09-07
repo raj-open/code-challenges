@@ -4,12 +4,11 @@
 /// but rather designe do provid a more "rust native" approach.
 ///
 /// In paricular we rely on constructing iterables.
+//
 
-#[rustfmt::skip]
 // ----------------------------------------------------------------
 // IMPORTS
 // ----------------------------------------------------------------
-
 use core::iter::IntoIterator;
 use core::iter::Iterator;
 // use core::convert::TryFrom;
