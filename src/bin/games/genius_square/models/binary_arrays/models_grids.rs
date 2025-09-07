@@ -12,8 +12,6 @@ use std::fmt::Result;
 use std::ops::Add;
 use std::ops::AddAssign;
 
-use general::_core::strings::join_multiline_strings;
-
 use super::models_arrays::BinArray;
 
 /// ----------------------------------------------------------------
