@@ -121,7 +121,7 @@ build-requirements:
 
 build-requirements-basic:
     @cargo +stable update --verbose
-    @cargo +stable install --locked --force cargo +stable-zigbuild
+    @cargo +stable install --locked --force cargo-zigbuild
     @# cargo +stable install --locked --force rustfmt
     @{{PYVENV_ON}} && {{PYVENV}} -m pip install --upgrade pip
     @{{PYVENV_ON}} && {{PYVENV}} -m pip install ruff uv
@@ -288,9 +288,9 @@ check-system:
     @echo "Python command used:        ${PYTHON_PATH}"
     @echo "Python command for venv:    {{PYVENV}}"
     @echo "Python path for venv:       $( {{PYVENV_ON}} && which {{PYVENV}} )"
-    @echo "cargo +stable Zigbuild:             $( cargo +stable-zigbuild --version )"
+    @echo "cargo +stable Zigbuild:             $( cargo-zigbuild --version )"
 
 check-system-requirements:
     @just _check-tool "cargo +stable" "cargo +stable"
     @# just _check-tool "cargo +stable fmt -- --force" "cargo +stable fmt"
-    @just _check-tool "cargo +stable-zigbuild" "cargo +stable-zigbuild"
+    @just _check-tool "cargo-zigbuild" "cargo-zigbuild"
