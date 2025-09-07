@@ -18,13 +18,11 @@ use crate::models::board::GameBoard;
 pub fn feature_initialise_game(
     rng: &mut ChaCha8Rng,
     option_roll: Option<Vec<String>>,
-) ->  GameBoard {
+) -> GameBoard {
     // Roll the dice
     let mut faces = option_roll.unwrap_or_else(|| roll_dice(rng));
     faces.sort();
-    let dice: Vec<Die> = faces.iter()
-        .map(|face| Die::from_string(face))
-        .collect();
+    let dice: Vec<Die> = faces.iter().map(|face| Die::from_string(face)).collect();
     println!("\nRoll: {}", faces.join(" "));
 
     // Establish the problem

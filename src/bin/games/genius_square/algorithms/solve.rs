@@ -22,10 +22,7 @@ use crate::models::board::GameBoard;
 // ----------------------------------------------------------------
 
 /// Recursively solves by check all possibilities
-pub fn solve_brute_force(
-    board: &GameBoard,
-    with_parallelisation: bool,
-) -> Receiver<GameBoard> {
+pub fn solve_brute_force(board: &GameBoard, with_parallelisation: bool) -> Receiver<GameBoard> {
     let (tx, rx) = channel::<GameBoard>();
     let mut board = board.clone();
     board.initialise_obstacle();
@@ -55,12 +52,14 @@ fn recursion(
     match option_pbar {
         Some(pbar_) => {
             pbar = &pbar_;
-        },
+        }
         None => {
             pbar = &pbar0;
-            let style = ProgressStyle::with_template("{spinner:.white} [{elapsed_precise}] [{wide_bar:.white}] {pos}/{len} ({eta_precise})");
+            let style = ProgressStyle::with_template(
+                "{spinner:.white} [{elapsed_precise}] [{wide_bar:.white}] {pos}/{len} ({eta_precise})",
+            );
             pbar.set_style(style.unwrap())
-        },
+        }
     }
 
     if n == 0 {
@@ -72,7 +71,8 @@ fn recursion(
         }
     } else {
         // find the next piece which has the fewest number of next possible moves
-        let kinds: Vec<EnumPiece> = kinds.iter()
+        let kinds: Vec<EnumPiece> = kinds
+            .iter()
             .map(|kind| {
                 let piece = Piece::from_kind(kind, None);
                 let iterator = board.get_configurations(&piece);
@@ -90,23 +90,20 @@ fn recursion(
         let piece0 = Piece::from_kind(kind, None); // initialised piece
         if with_parallelisation {
             board
-            .get_configurations(&piece0)
-            .collect::<Vec<Piece>>()
-            // DEV-NOTE: uses from Rayon
-            .into_par_iter()
-            .for_each(|piece| {
-                recursion_body(tx, board, &piece, kinds, kind, pbar, with_parallelisation);
-            })
+                .get_configurations(&piece0)
+                .collect::<Vec<Piece>>()
+                // DEV-NOTE: uses from Rayon
+                .into_par_iter()
+                .for_each(|piece| {
+                    recursion_body(tx, board, &piece, kinds, kind, pbar, with_parallelisation);
+                })
         } else {
-            board
-            .get_configurations(&piece0)
-            .for_each(|piece| {
+            board.get_configurations(&piece0).for_each(|piece| {
                 recursion_body(tx, board, &piece, kinds, kind, pbar, with_parallelisation);
             })
         }
     }
 }
-
 
 fn recursion_body(
     tx: &Sender<GameBoard>,

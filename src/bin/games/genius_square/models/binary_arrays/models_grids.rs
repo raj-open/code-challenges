@@ -50,7 +50,7 @@ pub struct BinGrid {
 
 impl Boundary {
     pub fn new(prev: i8, next: i8) -> Self {
-        Self {prev, next}
+        Self { prev, next }
     }
 
     pub fn empty() -> Self {
@@ -62,20 +62,20 @@ impl Boundaries {
     pub fn new(left: i8, right: i8, top: i8, bot: i8) -> Self {
         let h = Boundary::new(left, right);
         let v = Boundary::new(bot, top);
-        Self {h, v}
+        Self { h, v }
     }
 
     pub fn empty() -> Self {
         let h = Boundary::empty();
         let v = Boundary::empty();
-        Self {h, v}
+        Self { h, v }
     }
 }
 
 impl Node {
     pub fn new(label: Option<String>, bd: &Boundaries) -> Self {
         let bd = bd.clone();
-        Self {label, bd}
+        Self { label, bd }
     }
 
     pub fn empty() -> Self {
@@ -131,7 +131,7 @@ impl Node {
 impl BinGrid {
     pub fn new(m: usize, n: usize) -> Self {
         let clusters = vec![];
-        Self {m, n, clusters}
+        Self { m, n, clusters }
     }
 
     #[allow(unused)]
@@ -155,21 +155,12 @@ impl BinGrid {
         cluster.mapv(|x| x.bd.h.next)
     }
 
-    pub fn from_coord(
-        label: &String,
-        i: usize,
-        j: usize,
-        m: usize,
-        n: usize,
-    ) -> Self {
+    pub fn from_coord(label: &String, i: usize, j: usize, m: usize, n: usize) -> Self {
         let object = BinArray::from_coords(vec![(i, j)], m, n);
         return Self::from_array(label, &object);
     }
 
-    pub fn from_array(
-        label: &String,
-        object: &BinArray,
-    ) -> Self {
+    pub fn from_array(label: &String, object: &BinArray) -> Self {
         let (m, n) = object.get_shape();
         let mut cluster = Array2::from_elem((m, n), Node::empty());
         let mut result = Self::new(m, n);
@@ -232,10 +223,18 @@ impl BinGrid {
             if let Some(x) = label_ {
                 label = Some(x);
             }
-            if bd.v.next == 0 { bd.v.next = bd_.v.next; }
-            if bd.v.prev == 0 { bd.v.prev = bd_.v.prev; }
-            if bd.h.next == 0 { bd.h.next = bd_.h.next; }
-            if bd.h.prev == 0 { bd.h.prev = bd_.h.prev; }
+            if bd.v.next == 0 {
+                bd.v.next = bd_.v.next;
+            }
+            if bd.v.prev == 0 {
+                bd.v.prev = bd_.v.prev;
+            }
+            if bd.h.next == 0 {
+                bd.h.next = bd_.h.next;
+            }
+            if bd.h.prev == 0 {
+                bd.h.prev = bd_.h.prev;
+            }
         }
         let node = Node::new(label, &bd);
         return node;
@@ -247,43 +246,49 @@ impl Display for BinGrid {
         let (m, n) = self.get_shape();
 
         // compute fields of characters
-        let fields: Vec<Array2<String>> = (0.. m).map(|i| {
-            // compute fields of characters
-            let fields: Vec<Array2<String>> = (0.. n)
-                // get array of chars representing part of grid
-                .map(|j| self.get_node(i, j).display_in_grid())
-                .collect();
+        let fields: Vec<Array2<String>> = (0..m)
+            .map(|i| {
+                // compute fields of characters
+                let fields: Vec<Array2<String>> = (0..n)
+                    // get array of chars representing part of grid
+                    .map(|j| self.get_node(i, j).display_in_grid())
+                    .collect();
 
-            // determine size of merge
-            let m = fields.iter().map(|field_| field_.nrows()).max().unwrap_or(0);
-            let n = 1 + fields.iter().map(|field_| field_.ncols() - 1).sum::<usize>();
-            let mut field = Array2::from_elem((m, n), " ".to_string());
+                // determine size of merge
+                let m = fields.iter().map(|field_| field_.nrows()).max().unwrap_or(0);
+                let n = 1 + fields.iter().map(|field_| field_.ncols() - 1).sum::<usize>();
+                let mut field = Array2::from_elem((m, n), " ".to_string());
 
-            // h-join chars in grid, taking care of boundaries
-            let mut j0 = 0;
-            for (k, field_) in fields.iter().enumerate() {
-                let m_ = field_.nrows();
-                let n_ = field_.ncols();
-                let j1 = if k > 0 && n_ > 0 { j0 + n_ - 1 } else { j0 + n_ };
-                let mut view = field.slice_mut(slice![..m_, j0.. j1]);
-                if k == 0 {
-                    view.assign(&field_);
-                } else {
-                    view.assign(&field_.slice(slice![.., 1..]));
-                }
-                // on boundary allow empty values to be overwritten
-                if j0 > 0 {
-                    for i in 0.. m_ {
-                        if field[(i, j0 - 1)].trim() == "" {
-                            field[(i, j0 - 1)] = field_[(i, 0)].clone();
+                // h-join chars in grid, taking care of boundaries
+                let mut j0 = 0;
+                for (k, field_) in fields.iter().enumerate() {
+                    let m_ = field_.nrows();
+                    let n_ = field_.ncols();
+                    let j1 = if k > 0 && n_ > 0 {
+                        j0 + n_ - 1
+                    } else {
+                        j0 + n_
+                    };
+                    let mut view = field.slice_mut(slice![..m_, j0..j1]);
+                    if k == 0 {
+                        view.assign(&field_);
+                    } else {
+                        view.assign(&field_.slice(slice![.., 1..]));
+                    }
+                    // on boundary allow empty values to be overwritten
+                    if j0 > 0 {
+                        for i in 0..m_ {
+                            if field[(i, j0 - 1)].trim() == "" {
+                                field[(i, j0 - 1)] = field_[(i, 0)].clone();
+                            }
                         }
                     }
+                    j0 = j1;
                 }
-                j0 = j1;
-            }
 
-            return field;
-        }).collect();
+                return field;
+            })
+            .collect();
 
         // determine size of merge
         let m = 1 + fields.iter().map(|field_| field_.nrows() - 1).sum::<usize>();
@@ -295,7 +300,11 @@ impl Display for BinGrid {
         for (k, field_) in fields.iter().enumerate() {
             let m_ = field_.nrows();
             let n_ = field_.ncols();
-            let i1 = if k > 0 && m_ > 0 { i0 + m_ - 1 } else { i0 + m_ };
+            let i1 = if k > 0 && m_ > 0 {
+                i0 + m_ - 1
+            } else {
+                i0 + m_
+            };
             let mut view = field.slice_mut(slice![i0..i1, ..n_]);
             if k == 0 {
                 view.assign(&field_);
@@ -304,7 +313,7 @@ impl Display for BinGrid {
             }
             // on boundary allow empty values to be overwritten
             if i0 > 0 {
-                for j in 0.. n_ {
+                for j in 0..n_ {
                     if field[(i0 - 1, j)].trim() == "" {
                         field[(i0 - 1, j)] = field_[(0, j)].clone();
                     }

@@ -1,5 +1,4 @@
 /// Highest logic of application.
-
 pub mod constants;
 pub mod feat_initialise_game;
 pub mod feat_solve_game;

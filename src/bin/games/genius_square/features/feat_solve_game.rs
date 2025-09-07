@@ -14,9 +14,7 @@ use super::constants::TIMEOUT;
 // ----------------------------------------------------------------
 
 /// Feature to solve the problem
-pub fn feature_solve_game(
-    board: &GameBoard,
-) -> Option<GameBoard> {
+pub fn feature_solve_game(board: &GameBoard) -> Option<GameBoard> {
     print!("\nCompute solution ... ");
     let rx = solve_brute_force(&board, true);
     let mut solution: Option<GameBoard> = None;
@@ -33,7 +31,8 @@ pub fn feature_solve_game(
     }
 
     let dt_total = time.elapsed().unwrap();
-    let dt_mean: Duration = if n > 0 {dt_total/n} else {Duration::from_secs(0)};
+    #[rustfmt::skip]
+    let dt_mean: Duration = if n > 0 { dt_total / n } else { Duration::from_secs(0) };
     let dt = dt.unwrap_or(dt_total);
     match solution {
         // DEV-NOTE: use 'ref' to borrow
@@ -43,7 +42,7 @@ pub fn feature_solve_game(
             println!("Average time per solution:  {dt_mean:2?}");
             println!("Total time:                 {dt_total:2?}");
             println!("\nSolution 1:\n{}\n", board.pretty());
-        },
+        }
         None => {
             println!("\x1b[91mno solution found!\x1b[0m\n");
         }

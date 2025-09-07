@@ -43,7 +43,12 @@ impl GameBoard {
         let block = block.clone();
         let obstacle_basic = block.clone();
         let obstacle_dithered = block.clone();
-        return Self {block, obstacle_basic, obstacle_dithered,  pieces}
+        return Self {
+            block,
+            obstacle_basic,
+            obstacle_dithered,
+            pieces,
+        };
     }
 
     pub fn get_shape(&self) -> (usize, usize) {
@@ -113,8 +118,10 @@ impl GameBoard {
         let (m, n) = self.get_shape();
 
         let space = "      ";
+        #[rustfmt::skip]
         let end1 = format!("{space}\u{02554}\u{02550}\n{space}\u{02551} \n{space}\u{0255A}\u{02550}");
         let end2 = format!("\u{02550}\u{02557}\n \u{02551}\n\u{02550}\u{0255D}");
+        #[rustfmt::skip]
         let blocks: Vec<String> = FACE1_FMT.iter().map(|&x| format!("\u{02550}\n{x}\n\u{02550}")).collect();
         let sep = format!("\u{02550}\u{02566}\u{02550}\n \u{02551} \n\u{02550}\u{02569}\u{02550}");
         let xlabels = join_multiline_strings(&blocks, Some(&sep), "");
@@ -122,6 +129,7 @@ impl GameBoard {
 
         let end1 = format!("\u{02554}\u{02550}\u{02550}\u{02550}\u{02557}");
         let end2 = format!("\u{0255A}\u{02550}\u{02550}\u{02550}\u{0255D}");
+        #[rustfmt::skip]
         let blocks: Vec<String> = FACE2_FMT.iter().map(|&x| format!("\u{02551} {x} \u{02551}")).collect();
         let sep = format!("\n\u{02560}\u{02550}\u{02550}\u{02550}\u{02563}\n");
         let ylabels = blocks.join(&sep);
@@ -154,12 +162,20 @@ impl GameBoard {
         let mut trace = Array2::from_elem((m, n), " ".to_string());
         let piece = self.get_block();
         for (i, j) in piece.to_coords() {
-            let alpha = if formatted { piece.get_symb_fmt() } else { piece.get_symb() };
+            let alpha = if formatted {
+                piece.get_symb_fmt()
+            } else {
+                piece.get_symb()
+            };
             trace[[i, j]] = alpha;
         }
         for (_, piece) in self.pieces.iter() {
             for (i, j) in piece.to_coords() {
-                let alpha = if formatted { piece.get_symb_fmt() } else { piece.get_symb() };
+                let alpha = if formatted {
+                    piece.get_symb_fmt()
+                } else {
+                    piece.get_symb()
+                };
                 trace[[i, j]] = alpha;
             }
         }
@@ -171,7 +187,8 @@ impl GameBoard {
         let hbar = "\u{2500}".repeat(n + 2);
         let top = format!("\u{250C}{hbar}\u{2510}");
         let bot = format!("\u{2514}{hbar}\u{2518}");
-        let middle = field.rows()
+        let middle = field
+            .rows()
             .into_iter()
             .map(|row| {
                 let line = row.iter().map(|s| s.as_str()).collect::<String>();

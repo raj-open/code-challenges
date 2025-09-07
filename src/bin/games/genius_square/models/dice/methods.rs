@@ -11,11 +11,6 @@ use crate::models::constants::DICE;
 // METHODS
 // ----------------------------------------------------------------
 
-pub fn roll_dice(
-    rng: &mut ChaCha8Rng,
-) -> Vec<String> {
-    DICE
-    .iter()
-    .map(|die| die.choose(rng).unwrap().to_string())
-    .collect()
+pub fn roll_dice(rng: &mut ChaCha8Rng) -> Vec<String> {
+    DICE.iter().map(|die| die.choose(rng).unwrap().to_string()).collect()
 }

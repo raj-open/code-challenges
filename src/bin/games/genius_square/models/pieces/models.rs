@@ -34,22 +34,19 @@ impl Piece {
     pub fn from_kind(kind: &EnumPiece, positions: Option<BinArray>) -> Self {
         let kind = kind.clone();
         let positions = positions.unwrap_or_else(|| kind.get_positions());
-        Self {kind, positions}
+        Self { kind, positions }
     }
 
     pub fn get_shape(&self) -> (usize, usize) {
         self.positions.get_shape()
     }
 
-    pub fn from_coords(
-        coords: Vec<(usize, usize)>,
-        option_kind: Option<EnumPiece>,
-    ) -> Self {
+    pub fn from_coords(coords: Vec<(usize, usize)>, option_kind: Option<EnumPiece>) -> Self {
         let m = GRID_HEIGHT;
         let n = GRID_WIDTH;
         let positions = BinArray::from_coords(coords, m, n);
         let kind = option_kind.unwrap_or(EnumPiece::Blank);
-        Self {kind, positions}
+        Self { kind, positions }
     }
 
     pub fn to_coords(&self) -> Vec<(usize, usize)> {
@@ -92,7 +89,10 @@ impl Piece {
         let hbar = "\u{2500}".repeat(n + 2);
         let top = format!("\u{250C}{hbar}\u{2510}");
         let bot = format!("\u{2514}{hbar}\u{2518}");
-        let middle = self.positions.get_values().rows()
+        let middle = self
+            .positions
+            .get_values()
+            .rows()
             .into_iter()
             .map(|row| {
                 let line = row
@@ -118,7 +118,7 @@ impl Piece {
     pub fn transform_hflip(&self, recentre: bool) -> Self {
         let kind = self.get_kind();
         let positions = self.positions.transform_hflip(recentre);
-        let result = Self{kind, positions};
+        let result = Self { kind, positions };
         return result;
     }
 
@@ -126,16 +126,15 @@ impl Piece {
     pub fn transform_vflip(&self, recentre: bool) -> Self {
         let kind = self.get_kind();
         let positions = self.positions.transform_vflip(recentre);
-        let result = Self {kind, positions};
+        let result = Self { kind, positions };
         return result;
-
     }
 
     #[allow(unused)]
     pub fn transform_transpose(&self, recentre: bool) -> Self {
         let kind = self.get_kind();
         let positions = self.positions.transform_transpose(recentre);
-        let result = Self {kind, positions};
+        let result = Self { kind, positions };
         return result;
     }
 
@@ -143,19 +142,15 @@ impl Piece {
     pub fn transform_rotate(&self, k: i8, recentre: bool) -> Self {
         let kind = self.get_kind();
         let positions = self.positions.transform_rotate(k, recentre);
-        let result = Self {kind, positions};
+        let result = Self { kind, positions };
         return result;
     }
 
     #[allow(unused)]
-    pub fn transform_shift(
-        &self,
-        di: isize,
-        dj: isize,
-    ) -> Self {
+    pub fn transform_shift(&self, di: isize, dj: isize) -> Self {
         let kind = self.get_kind();
         let positions = self.positions.transform_shift(di, dj);
-        let result = Self {kind, positions};
+        let result = Self { kind, positions };
         return result;
     }
 
@@ -163,7 +158,7 @@ impl Piece {
     pub fn transform_dither(&self) -> Self {
         let kind = self.get_kind();
         let positions = self.positions.transform_dither();
-        let result = Self {kind, positions};
+        let result = Self { kind, positions };
         return result;
     }
 }
@@ -180,7 +175,7 @@ impl Add for Piece {
     fn add(self, other: Self) -> Self::Output {
         let kind = self.get_kind();
         let positions = self.get_positions().to_owned() + other.get_positions().to_owned();
-        return Self {kind, positions};
+        return Self { kind, positions };
     }
 }
 
@@ -196,7 +191,7 @@ impl Mul for Piece {
     fn mul(self, other: Self) -> Self::Output {
         let kind = self.get_kind();
         let positions = self.get_positions().to_owned() * other.get_positions().to_owned();
-        return Self {kind, positions};
+        return Self { kind, positions };
     }
 }
 
