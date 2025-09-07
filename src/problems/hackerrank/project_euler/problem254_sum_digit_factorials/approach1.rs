@@ -3,11 +3,11 @@
 /// Computes Primes using the Sieve of Eratosthenes.
 /// Then efficiently computes the cumulutative sum of primes
 /// below certain integers.
+//
 
-/// ----------------------------------------------------------------
-/// IMPORTS
-/// ----------------------------------------------------------------
-
+// ----------------------------------------------------------------
+// IMPORTS
+// ----------------------------------------------------------------
 use std::io;
 use std::io::BufRead;
 use std::clone::Clone;
@@ -369,7 +369,5 @@ where
 {
     let mut keys: Vec<K> = map.keys().cloned().collect();
     keys.sort();
-    keys.iter()
-        .map(|key| (key.clone(), map.get(key).unwrap().clone()))
-        .collect()
+    keys.iter().map(|key| (key.clone(), map.get(key).unwrap().clone())).collect()
 }

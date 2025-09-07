@@ -1,15 +1,15 @@
-/// ----------------------------------------------------------------
-/// IMPORTS
-/// ----------------------------------------------------------------
+// ----------------------------------------------------------------
+// IMPORTS
+// ----------------------------------------------------------------
 
 use std::vec;
 use super::base::GenericTree;
 use super::base::GenericTreeOrRoot;
 use super::base::GenericTreeLike;
 
-/// ----------------------------------------------------------------
-/// BASIC IMPLEMENTATION FOR GenericTree
-/// ----------------------------------------------------------------
+// ----------------------------------------------------------------
+// BASIC IMPLEMENTATION FOR GenericTree
+// ----------------------------------------------------------------
 
 /// Implementation of a tree
 #[allow(unused)]
@@ -55,9 +55,9 @@ where
     }
 }
 
-/// ----------------------------------------------------------------
-/// BASIC IMPLEMENTATION OF TRAIT FOR GenericTree
-/// ----------------------------------------------------------------
+// ----------------------------------------------------------------
+// BASIC IMPLEMENTATION OF TRAIT FOR GenericTree
+// ----------------------------------------------------------------
 
 impl<T> GenericTreeLike<T> for GenericTree<T>
 where
@@ -121,7 +121,11 @@ where
         let n = self.num_children();
         for (k, child) in self.children.iter().enumerate() {
             let is_final = k == n - 1;
-            let connector = if child.has_children() { "╮ " } else { "─ " };
+            let connector = if child.has_children() {
+                "╮ "
+            } else {
+                "─ "
+            };
             let sep_ = if is_final {
                 format!("╰──{}", connector)
             } else {

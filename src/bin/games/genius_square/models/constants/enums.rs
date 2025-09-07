@@ -1,19 +1,19 @@
-/// ----------------------------------------------------------------
-/// IMPORTS
-/// ----------------------------------------------------------------
+// ----------------------------------------------------------------
+// IMPORTS
+// ----------------------------------------------------------------
 
 use std::fmt::Debug;
 use std::fmt::Display;
 use std::fmt::Formatter;
 use std::fmt::Result;
 
-use crate::models::arrays::models::BinArray;
+use crate::models::binary_arrays::BinArray;
 use super::board::*;
 use super::pieces::*;
 
-/// ----------------------------------------------------------------
-/// STRUCTS AND CONSTANTS
-/// ----------------------------------------------------------------
+// ----------------------------------------------------------------
+// STRUCTS AND CONSTANTS
+// ----------------------------------------------------------------
 
 #[derive(Clone, Debug, Eq, Hash, PartialEq)]
 pub enum EnumPiece {
@@ -42,16 +42,12 @@ pub const ENUM_PIECES: &[EnumPiece] = &[
     EnumPiece::Z,
 ];
 
-pub const NON_ADJACENT: &[EnumPiece] = &[
-    EnumPiece::Symb1,
-    EnumPiece::Symb2,
-    EnumPiece::Symb3,
-    EnumPiece::C,
-];
+pub const NON_ADJACENT: &[EnumPiece] =
+    &[EnumPiece::Symb1, EnumPiece::Symb2, EnumPiece::Symb3, EnumPiece::C];
 
-/// ----------------------------------------------------------------
-/// IMPLEMENTATIONS
-/// ----------------------------------------------------------------
+// ----------------------------------------------------------------
+// IMPLEMENTATIONS
+// ----------------------------------------------------------------
 
 impl EnumPiece {
     #[allow(unused)]
