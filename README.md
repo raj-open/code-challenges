@@ -130,17 +130,17 @@ To perform this separately, use
 just build-compile GeniusSquare
 ```
 
-which produces the binary in [target/release/GeniusSquare](target/release/GeniusSquare).
+which copy the binary in [target/release/GeniusSquare](target/release/GeniusSquare) to the [dist](dist) folder.
 The standalone binary can be called as above:
 
 ```bash
-./target/release/GeniusSquare
+./dist/GeniusSquare
 # with random seed
-./target/release/GeniusSquare {Seed}
-./target/release/GeniusSquare 1234
+./dist/GeniusSquare {Seed}
+./dist/GeniusSquare 1234
 # with given initialisation
-./target/release/GeniusSquare {Dice1} {Dice2} ... {Dice7}
-./target/release/GeniusSquare B1 C4 D6 F1 F2 F3 F5
+./dist/GeniusSquare {Dice1} {Dice2} ... {Dice7}
+./dist/GeniusSquare B1 C4 D6 F1 F2 F3 F5
 ```
 
 #### Note on the algorithm ####
@@ -161,7 +161,7 @@ just run-rust GeniusSquare B1 C4 D2 D6 E5 F1 F3
 results in
 
 ```bash
-Roll: B1, C4, D2, D6, E5, F1, F3.
+Roll: B1 C4 D2 D6 E5 F1 F3.
 
 Problem:
       ╔═══╦═══╦═══╦═══╦═══╦═══╗
