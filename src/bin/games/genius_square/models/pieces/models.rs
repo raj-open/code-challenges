@@ -11,9 +11,10 @@ use std::ops::AddAssign;
 use std::ops::Mul;
 use std::ops::MulAssign;
 
-use crate::models::arrays::models::BinArray;
-use crate::models::constants::board::*;
-use crate::models::constants::enums::*;
+use crate::models::arrays::BinArray;
+use crate::models::constants::EnumPiece;
+use crate::models::constants::GRID_HEIGHT;
+use crate::models::constants::GRID_WIDTH;
 
 /// ----------------------------------------------------------------
 /// STRUCTS

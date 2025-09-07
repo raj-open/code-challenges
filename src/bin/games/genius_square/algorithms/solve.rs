@@ -12,10 +12,10 @@ use std::sync::mpsc::Receiver;
 use rayon::iter::IntoParallelIterator;
 use rayon::iter::ParallelIterator;
 
-use crate::models::constants::enums::ENUM_PIECES;
-use crate::models::constants::enums::EnumPiece;
-use crate::models::pieces::models::Piece;
-use crate::models::board::models::GameBoard;
+use crate::models::constants::ENUM_PIECES;
+use crate::models::constants::EnumPiece;
+use crate::models::pieces::Piece;
+use crate::models::board::GameBoard;
 
 /// ----------------------------------------------------------------
 /// METHODS

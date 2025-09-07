@@ -5,7 +5,7 @@
 use std::time::Duration;
 use std::time::SystemTime;
 
-use crate::models::board::models::GameBoard;
+use crate::models::board::GameBoard;
 use crate::algorithms::solve::solve_brute_force;
 use super::constants::TIMEOUT;
 

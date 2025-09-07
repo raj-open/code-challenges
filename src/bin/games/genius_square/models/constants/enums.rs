@@ -7,7 +7,7 @@ use std::fmt::Display;
 use std::fmt::Formatter;
 use std::fmt::Result;
 
-use crate::models::arrays::models::BinArray;
+use crate::models::arrays::BinArray;
 use super::board::*;
 use super::pieces::*;
 

@@ -4,11 +4,11 @@
 
 use rand_chacha::ChaCha8Rng;
 
-use crate::models::dice::methods::roll_dice;
-use crate::models::dice::models::Die;
-use crate::models::constants::enums::EnumPiece;
-use crate::models::pieces::models::Piece;
-use crate::models::board::models::GameBoard;
+use crate::models::dice::roll_dice;
+use crate::models::dice::Die;
+use crate::models::constants::EnumPiece;
+use crate::models::pieces::Piece;
+use crate::models::board::GameBoard;
 
 /// ----------------------------------------------------------------
 /// METHODS

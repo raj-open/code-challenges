@@ -7,7 +7,8 @@ use std::fmt::Display;
 use std::fmt::Formatter;
 use std::fmt::Result;
 
-use crate::models::constants::dice::*;
+use crate::models::constants::FACE1;
+use crate::models::constants::FACE2;
 
 /// ----------------------------------------------------------------
 /// STRUCTS

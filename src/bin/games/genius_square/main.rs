@@ -11,7 +11,7 @@ mod algorithms;
 mod models;
 mod features;
 
-use models::constants::dice::NUM_DICE;
+use models::constants::NUM_DICE;
 use features::feature_initialise_game;
 use features::feature_solve_game;
 

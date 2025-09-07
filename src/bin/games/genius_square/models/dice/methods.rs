@@ -5,7 +5,7 @@
 use rand_chacha::ChaCha8Rng;
 use rand::prelude::IndexedRandom;
 
-use crate::models::constants::dice::*;
+use crate::models::constants::DICE;
 
 /// ----------------------------------------------------------------
 /// METHODS

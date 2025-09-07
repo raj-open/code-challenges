@@ -9,10 +9,13 @@ use std::fmt::Formatter;
 use std::fmt::Result;
 use std::collections::HashMap;
 
-use crate::models::constants::board::*;
-use crate::models::constants::dice::*;
-use crate::models::constants::enums::*;
-use crate::models::pieces::models::*;
+use crate::models::constants::EnumPiece;
+use crate::models::constants::FACE1_FMT;
+use crate::models::constants::FACE2_FMT;
+use crate::models::constants::GRID_HEIGHT;
+use crate::models::constants::GRID_WIDTH;
+use crate::models::constants::NON_ADJACENT;
+use crate::models::pieces::Piece;
 
 /// ----------------------------------------------------------------
 /// STRUCTS
