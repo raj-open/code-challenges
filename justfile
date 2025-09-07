@@ -120,9 +120,9 @@ build-requirements:
     @just build-requirements-dependencies
 
 build-requirements-basic:
-    @cargo update --verbose
-    @cargo install --locked --force cargo-zigbuild
-    @# cargo install --locked --force rustfmt
+    @cargo +stable update --verbose
+    @cargo +stable install --locked --force cargo +stable-zigbuild
+    @# cargo +stable install --locked --force rustfmt
     @{{PYVENV_ON}} && {{PYVENV}} -m pip install --upgrade pip
     @{{PYVENV_ON}} && {{PYVENV}} -m pip install ruff uv
 
@@ -136,9 +136,10 @@ build-requirements-dependencies:
     @{{PYVENV_ON}} && {{PYVENV}} -m uv sync
 
 build-compile module="${MAIN_MODULE}":
-    @# cargo zigbuild --target-dir "target" --release --lib
+    @rustup override set stable
+    @# cargo +stable zigbuild --target-dir "target" --release --lib
     @- rm "dist/{{module}}" 2> /dev/null
-    @cargo zigbuild --target-dir "target" --release --bin "{{module}}"
+    @cargo +stable zigbuild --target-dir "target" --release --bin "{{module}}"
     @cp "target/release/{{module}}" dist
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -151,7 +152,7 @@ run-py module="main" *args="":
 run-rust module="${MAIN_MODULE}" *args="":
     @just build-compile "{{module}}"
     @# "dist/{{module}}" {{args}}
-    @cargo run --release --bin "{{module}}" {{args}}
+    @cargo +stable run --release --bin "{{module}}" {{args}}
 
 # --------------------------------
 # TARGETS: development
@@ -163,7 +164,7 @@ dev *args:
 dev-rust module="${MAIN_MODULE}" *args="":
     @just build-compile "{{module}}"
     @# "./target/release/{{module}}" {{args}}
-    @cargo run --bin "{{module}}" {{args}}
+    @cargo +stable run --bin "{{module}}" {{args}}
 
 # --------------------------------
 # TARGETS: tests
@@ -178,41 +179,39 @@ tests-logs log_path="logs":
     @just _display-logs
 
 test-unit path *args:
-    @cargo zigbuild --tests
+    @cargo +stable zigbuild --tests
     @echo "run unit tests in $( just _rust_path_to_test_module "{{path}}")"
-    @cargo test --lib "$( just _rust_path_to_test_module "{{path}}")" {{args}} -- --nocapture
+    @cargo +stable test --lib "$( just _rust_path_to_test_module "{{path}}")" {{args}} -- --nocapture
     @# echo "run unit tests in $( just _rust_path_to_module "{{path}}")"
-    @# cargo test --lib "$( just _rust_path_to_module "{{path}}")" {{args}} -- --nocapture
+    @# cargo +stable test --lib "$( just _rust_path_to_module "{{path}}")" {{args}} -- --nocapture
 
 test-unit-optimised path *args:
-    @cargo zigbuild --tests --release
+    @cargo +stable zigbuild --tests --release
     @echo "run unit tests in $( just _rust_path_to_test_module "{{path}}")"
-    @cargo test --lib "$( just _rust_path_to_test_module "{{path}}")" {{args}} -- --nocapture
+    @cargo +stable test --lib "$( just _rust_path_to_test_module "{{path}}")" {{args}} -- --nocapture
     @# echo "run unit tests in $( just _rust_path_to_module "{{path}}")"
-    @# cargo test --lib "$( just _rust_path_to_module "{{path}}")" {{args}} -- --nocapture
+    @# cargo +stable test --lib "$( just _rust_path_to_module "{{path}}")" {{args}} -- --nocapture
 
 tests-unit *args:
     @just _reset-logs
-    @cargo zigbuild --tests
-    @cargo test --lib {{args}} -- --nocapture
+    @cargo +stable zigbuild --tests
+    @cargo +stable test --lib {{args}} -- --nocapture
 
 tests-unit-optimised *args:
     @just _reset-logs
-    @cargo zigbuild --tests --release
-    @cargo test --lib {{args}} -- --nocapture
+    @cargo +stable zigbuild --tests --release
+    @cargo +stable test --lib {{args}} -- --nocapture
 
 # --------------------------------
 # TARGETS: prettify
 # --------------------------------
 
 prettify:
-    @rustup override set nightly
-    @- cargo +nightly fmt --all --verbose -- --config-path rustfmt.toml
-    @rustup override set stable
+    @cargo +nightly fmt --all --verbose -- --config-path rustfmt.toml
 
 prettify-dry:
     @echo "Not yet implemented"
-    @# cargo fmt --verbose --check
+    @# cargo +stable fmt --verbose --check
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # TARGETS: clean
@@ -226,7 +225,7 @@ clean-basic log_path="logs":
     @echo "All system artefacts will be force removed."
     @- just _clean-all-files "." ".DS_Store" 2> /dev/null
     @echo "All build artefacts will be force removed."
-    @cargo clean
+    @cargo +stable clean
     @just _clean-all-files "." "*.rs.bk"
     @- rm -rf ".venv" 2> /dev/null
     @- rm -rf "target" 2> /dev/null
@@ -284,14 +283,14 @@ watch-logs-all n="10":
 
 check-system:
     @echo "Operating System detected:  {{os_family()}}"
-    @echo "Cargo command:              $( cargo --version )"
+    @echo "cargo +stable command:              $( cargo +stable --version )"
     @echo "Rustc command:              $( rustc --version )"
     @echo "Python command used:        ${PYTHON_PATH}"
     @echo "Python command for venv:    {{PYVENV}}"
     @echo "Python path for venv:       $( {{PYVENV_ON}} && which {{PYVENV}} )"
-    @echo "Cargo Zigbuild:             $( cargo-zigbuild --version )"
+    @echo "cargo +stable Zigbuild:             $( cargo +stable-zigbuild --version )"
 
 check-system-requirements:
-    @just _check-tool "cargo" "cargo"
-    @# just _check-tool "cargo fmt -- --force" "cargo fmt"
-    @just _check-tool "cargo-zigbuild" "cargo-zigbuild"
+    @just _check-tool "cargo +stable" "cargo +stable"
+    @# just _check-tool "cargo +stable fmt -- --force" "cargo +stable fmt"
+    @just _check-tool "cargo +stable-zigbuild" "cargo +stable-zigbuild"
