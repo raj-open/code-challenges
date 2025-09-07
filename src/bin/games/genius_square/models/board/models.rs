@@ -9,6 +9,8 @@ use std::fmt::Formatter;
 use std::fmt::Result;
 use std::collections::HashMap;
 
+use general::_core::strings::join_multiline_strings;
+
 use crate::models::constants::EnumPiece;
 use crate::models::constants::FACE1_FMT;
 use crate::models::constants::FACE2_FMT;
@@ -103,43 +105,52 @@ impl GameBoard {
     }
 
     pub fn pretty(&self) -> String {
-        let _m = GRID_HEIGHT;
-        let n = GRID_WIDTH;
         let field = self.to_array_of_strings(true);
 
-        fn create_border(
-            lcorner1: &str,
-            fill1: &str,
-            lcorner2: &str,
-            fill2: &str,
-            mid2: &str,
-            rcorner: &str,
-            n: usize,
+        fn create_box(
+            char: &String,
+            ulcorner: &str,
+            urcorner: &str,
+            blcorner: &str,
+            brcorner: &str,
+            hbar: &str,
+            vbar: &str,
         ) -> String {
-            let middle = format!("{fill2}{mid2}{fill2}{fill2}").repeat(n-1);
-            format!("{lcorner1}{fill1}{fill1}{fill1}{lcorner2}{fill2}{fill2}{middle}{fill2}{rcorner}")
+            let top = format!("{ulcorner}{hbar}{hbar}{hbar}{urcorner}");
+            let mid = format!("{vbar} {char} {vbar}");
+            let bot = format!("{blcorner}{hbar}{hbar}{hbar}{brcorner}");
+            format!("{top}\n{mid}\n{bot}")
         }
 
-        let top1 = create_border("\u{02554}", "\u{2550}", "\u{02566}", "\u{2550}", "\u{2564}", "\u{2555}", n);
-        let top2 = create_border("\u{02560}", "\u{2550}", "\u{0256C}", "\u{2550}", "\u{256A}", "\u{2561}", n);
-        let mid = create_border("\u{02560}", "\u{2500}", "\u{0256C}", "\u{2500}", "\u{253C}", "\u{2524}", n);
-        let bot = create_border("\u{02559}", "\u{2500}", "\u{02568}", "\u{2500}", "\u{02534}", "\u{02518}", n);
+        fn create_box_head(char: &str) -> String {
+            create_box(&char.to_string(), "\u{02554}", "\u{02557}", "\u{0255A}", "\u{0255D}", "\u{02550}", "\u{02551}")
+        }
 
-        let head = FACE1_FMT.join(" \u{2502} ").to_string();
-        let head = format!("{top1}\n\u{02551}   \u{02551} {head} \u{2502}\n{top2}");
+        #[allow(unused)]
+        fn create_box_body(char: &String) -> String {
+            create_box(char, "\u{0250C}", "\u{02510}", "\u{02514}", "\u{02518}", "\u{2500}", "\u{2502}")
+        }
+
+        let corner = create_box(&" ".to_string(), " ", " ", " ", " ", " ", " ");
+        let mut head_blocks: Vec<String> = FACE1_FMT.iter().map(|&x| x).map(create_box_head).collect();
+        head_blocks.insert(0, corner);
+        let head = join_multiline_strings(&head_blocks, " ");
 
         let middle = field.rows()
             .into_iter()
             .enumerate()
             .map(|(i, row)| {
-                let index = FACE2_FMT[i];
-                let line = row.iter().map(|s| s.to_string()).collect::<Vec<String>>().join(" \u{2502} ");
-                return format!("\u{02551} {index} \u{02551} {line} \u{2502}");
+                let char = FACE2_FMT[i];
+                let block = create_box_head(char);
+                let mut blocks: Vec<String> = row.iter().map(create_box_body).collect();
+                blocks.insert(0, block);
+                let line = join_multiline_strings(&blocks, " ");
+                return line;
             })
             .collect::<Vec<String>>()
-            .join(format!("\n{mid}\n").as_str());
+            .join("\n");
 
-        let text = format!("{head}\n{middle}\n{bot}");
+        let text = format!("{head}\n{middle}");
 
         return text;
     }
