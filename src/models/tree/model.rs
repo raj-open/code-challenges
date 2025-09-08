@@ -18,8 +18,8 @@ where
     T: Clone,
 {
     pub fn new(root: T, children: Option<Vec<GenericTree<T>>>) -> Self {
-        let children = children.map_or_else(|| vec![], |elements| elements.clone());
-        return Self { root, children };
+        let children = children.map_or_else(std::vec::Vec::new, |elements| elements.clone());
+        Self { root, children }
     }
 }
 
@@ -39,8 +39,8 @@ where
 {
     fn clone(&self) -> Self {
         let root = self.root.clone();
-        let children: Vec<GenericTree<T>> = self.children.iter().map(|u| u.clone()).collect();
-        return Self { root, children };
+        let children: Vec<GenericTree<T>> = self.children.to_vec();
+        Self { root, children }
     }
 }
 
@@ -50,8 +50,8 @@ where
 {
     fn to_string(&self) -> String {
         let lines = self.repr_tree(None, None, None);
-        let repr = lines.join("\n");
-        return repr;
+
+        lines.join("\n")
     }
 }
 
@@ -84,10 +84,10 @@ where
     ) -> String {
         let indent: &str = indent.map_or_else(|| "  ", |x| x);
         let sep: &str = sep.map_or_else(|| "  ", |x| x);
-        let lex: Vec<bool> = lex.map_or_else(|| vec![], |x| x.clone());
+        let lex: Vec<bool> = lex.map_or_else(std::vec::Vec::new, |x| x.clone());
         let prefix;
         if lex.len() <= 1 {
-            return node.to_string();
+            node.to_string()
         } else {
             prefix = lex[..lex.len() - 1]
                 .iter()
@@ -99,7 +99,7 @@ where
                 })
                 .collect::<Vec<String>>()
                 .join("");
-            return format!("{}{}{}", prefix, sep, node.to_string());
+            format!("{}{}{}", prefix, sep, node.to_string())
         }
     }
 
@@ -137,6 +137,6 @@ where
             result.append(&mut result_);
         }
 
-        return result;
+        result
     }
 }

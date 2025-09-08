@@ -25,7 +25,7 @@ use std::str::FromStr;
 #[allow(unused)]
 fn main() {
     let lines = read_input(&io::stdin());
-    let t = lines.iter().nth(0).unwrap().parse::<usize>();
+    let t = lines.first().unwrap().parse::<usize>();
     let numbers: Vec<i64> = lines.iter().skip(1).map(|x| x.parse().unwrap()).collect();
 
     let sums = run(&numbers);
@@ -39,9 +39,9 @@ fn main() {
 
 pub fn run(numbers: &Vec<i64>) -> HashMap<i64, i64> {
     let n_max: i64 = numbers.iter().fold(0, |prev, &n| prev.max(n));
-    let primes = get_primes(n_max as i64);
-    let sums = compute_aggregates(&numbers, &primes);
-    return sums;
+    let primes = get_primes(n_max);
+
+    compute_aggregates(numbers, &primes)
 }
 
 // ----------------------------------------------------------------
@@ -60,7 +60,7 @@ fn get_primes(n_max: i64) -> Vec<i64> {
             });
         }
     }
-    return result;
+    result
 }
 
 fn compute_aggregates(numbers: &Vec<i64>, primes: &Vec<i64>) -> HashMap<i64, i64> {
@@ -72,10 +72,10 @@ fn compute_aggregates(numbers: &Vec<i64>, primes: &Vec<i64>) -> HashMap<i64, i64
     let mut sum: i64 = 0;
     for n in numbers_sorted {
         sum += values.iter().filter(|&&p| (p <= n)).sum::<i64>();
-        values = values.iter().filter(|&&p| (p > n)).cloned().collect();
+        values.retain(|&p| (p > n));
         sums.insert(n, sum);
     }
-    return sums;
+    sums
 }
 
 // ----------------------------------------------------------------
@@ -95,5 +95,5 @@ where
     T: FromStr,
     <T as FromStr>::Err: Debug,
 {
-    return text.parse::<T>().unwrap();
+    text.parse::<T>().unwrap()
 }

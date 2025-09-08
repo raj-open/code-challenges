@@ -43,12 +43,12 @@ impl GameBoard {
         let block = block.clone();
         let obstacle_basic = block.clone();
         let obstacle_dithered = block.clone();
-        return Self {
+        Self {
             block,
             obstacle_basic,
             obstacle_dithered,
             pieces,
-        };
+        }
     }
 
     pub fn get_shape(&self) -> (usize, usize) {
@@ -74,7 +74,7 @@ impl GameBoard {
     }
 
     pub fn get_obstacle(&self, kind: &EnumPiece) -> &Piece {
-        if NON_ADJACENT.contains(&kind) {
+        if NON_ADJACENT.contains(kind) {
             &self.obstacle_dithered
         } else {
             &self.obstacle_basic
@@ -103,15 +103,15 @@ impl GameBoard {
 
     pub fn to_string(&self) -> String {
         let field = self.to_array_of_strings(false);
-        let text = Self::array_to_string(&field);
-        return text;
+
+        Self::array_to_string(&field)
     }
 
     #[allow(unused)]
     pub fn to_formatted(&self) -> String {
         let field = self.to_array_of_strings(true);
-        let text = Self::array_to_string(&field);
-        return text;
+
+        Self::array_to_string(&field)
     }
 
     pub fn pretty(&self) -> String {
@@ -120,18 +120,19 @@ impl GameBoard {
         let space = "      ";
         let end1 =
             format!("{space}\u{02554}\u{02550}\n{space}\u{02551} \n{space}\u{0255A}\u{02550}");
-        let end2 = format!("\u{02550}\u{02557}\n \u{02551}\n\u{02550}\u{0255D}");
+        let end2 = "\u{02550}\u{02557}\n \u{02551}\n\u{02550}\u{0255D}".to_string();
         let blocks: Vec<String> =
             FACE1_FMT.iter().map(|&x| format!("\u{02550}\n{x}\n\u{02550}")).collect();
-        let sep = format!("\u{02550}\u{02566}\u{02550}\n \u{02551} \n\u{02550}\u{02569}\u{02550}");
+        let sep =
+            "\u{02550}\u{02566}\u{02550}\n \u{02551} \n\u{02550}\u{02569}\u{02550}".to_string();
         let xlabels = join_multiline_strings(&blocks, Some(&sep), "");
         let xlabels = join_multiline_strings(&[end1, xlabels, end2].to_vec(), None, "");
 
-        let end1 = format!("\u{02554}\u{02550}\u{02550}\u{02550}\u{02557}");
-        let end2 = format!("\u{0255A}\u{02550}\u{02550}\u{02550}\u{0255D}");
+        let end1 = "\u{02554}\u{02550}\u{02550}\u{02550}\u{02557}".to_string();
+        let end2 = "\u{0255A}\u{02550}\u{02550}\u{02550}\u{0255D}".to_string();
         let blocks: Vec<String> =
             FACE2_FMT.iter().map(|&x| format!("\u{02551} {x} \u{02551}")).collect();
-        let sep = format!("\n\u{02560}\u{02550}\u{02550}\u{02550}\u{02563}\n");
+        let sep = "\n\u{02560}\u{02550}\u{02550}\u{02550}\u{02563}\n".to_string();
         let ylabels = blocks.join(&sep);
         let ylabels = [end1, ylabels, end2].join("\n");
 
@@ -153,7 +154,7 @@ impl GameBoard {
 
         let text = format!("{xlabels}\n{middle}");
 
-        return text;
+        text
     }
 
     fn to_array_of_strings(&self, formatted: bool) -> Array2<String> {
@@ -179,7 +180,7 @@ impl GameBoard {
                 trace[[i, j]] = alpha;
             }
         }
-        return trace;
+        trace
     }
 
     fn array_to_string(field: &Array2<String>) -> String {
@@ -192,12 +193,12 @@ impl GameBoard {
             .into_iter()
             .map(|row| {
                 let line = row.iter().map(|s| s.as_str()).collect::<String>();
-                return format!("\u{2502} {line} \u{2502}");
+                format!("\u{2502} {line} \u{2502}")
             })
             .collect::<Vec<String>>()
             .join("\n");
         let text = format!("{top}\n{middle}\n{bot}");
-        return text;
+        text
     }
 
     /// Determines all possible configurations
@@ -218,14 +219,14 @@ impl GameBoard {
         let obst = self.get_obstacle(&kind).get_positions();
 
         // construct iterator
-        let it = piece
+
+        piece
             // convert to positions
             .get_positions()
             // get all possible orientations + shifts which do not collide with obstacle
             .get_configurations(Some(obst))
             // convert to piece
-            .map(move |pos| Piece::from_kind(&kind, Some(pos)));
-        return it;
+            .map(move |pos| Piece::from_kind(&kind, Some(pos)))
     }
 }
 

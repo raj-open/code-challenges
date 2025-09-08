@@ -108,8 +108,8 @@ impl EnumPiece {
         }
         let m = GRID_HEIGHT;
         let n = GRID_WIDTH;
-        let positions = BinArray::from_coords(coords, m, n);
-        return positions;
+
+        BinArray::from_coords(coords, m, n)
     }
 }
 

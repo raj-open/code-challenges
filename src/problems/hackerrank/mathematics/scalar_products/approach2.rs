@@ -73,7 +73,7 @@ use std::str::FromStr;
 #[allow(unused)]
 fn main() {
     let lines = read_input(&io::stdin());
-    let line = lines.iter().nth(0).unwrap();
+    let line = lines.first().unwrap();
 
     let args: Vec<String> = line.split(" ").map(|x| x.to_string()).collect();
     let mut args: Iter<'_, String> = args.iter();
@@ -105,14 +105,14 @@ pub fn run(c: i64, m: i64, n: usize) -> usize {
     for k in 3..n_max {
         // k = i + j
         // compute v := G^k * v_0
-        let system_pow_k = system_powers.get(&(k as i64)).unwrap();
+        let system_pow_k = system_powers.get(&{ k }).unwrap();
         let v = system_pow_k.state;
         // now compute < G^i v_0, G^j v_0 > = < G^k v_0, v_0 > = < v, v_0 >
         let value = Vector2::inner_product(&v, &v0).value;
         values.insert(value);
     }
 
-    return values.len();
+    values.len()
 }
 
 // ----------------------------------------------------------------
@@ -129,9 +129,9 @@ where
     results.insert(0, x_pow_2_pow.clone());
     (1..n).for_each(|k| {
         x_pow_2_pow = x_pow_2_pow.pow2();
-        results.insert(k as i64, x_pow_2_pow.clone());
+        results.insert(k, x_pow_2_pow.clone());
     });
-    return results;
+    results
 }
 
 /// efficiently computes x^k for 0 <= k <= n
@@ -163,17 +163,16 @@ where
     let x_pow_2_pow = power_of_2_powers(x, l);
 
     // now compute along levels of a binary tree
-    let powers = (0..l).fold(powers, |mut prev, k| {
+
+    (0..l).fold(powers, |mut prev, k| {
         let num_leaves = prev.len() as i64;
         let x_pow_2_pow_k = x_pow_2_pow.get(&k).unwrap().clone();
         for (&j, value) in prev.clone().iter() {
             let value_ = x_pow_2_pow_k.clone() * value.clone();
             prev.insert(j + num_leaves, value_);
         }
-        return prev;
-    });
-
-    return powers;
+        prev
+    })
 }
 
 // ----------------------------------------------------------------
@@ -269,7 +268,7 @@ where
         if m.positive() {
             self.value = self.value.rem(m)
         }
-        return self;
+        self
     }
 }
 
@@ -300,7 +299,7 @@ where
     fn add(self, other: Self) -> Self::Output {
         let modulus = self.modulus;
         let value = self.value + other.value;
-        return Self::new(value, modulus).remainder();
+        Self::new(value, modulus).remainder()
     }
 }
 
@@ -313,7 +312,7 @@ where
     fn mul(self, other: Self) -> Self::Output {
         let modulus = self.modulus;
         let value = self.value * other.value;
-        return Self::new(value, modulus).remainder();
+        Self::new(value, modulus).remainder()
     }
 }
 
@@ -459,7 +458,7 @@ where
     fn mul(self, other: Self) -> Self::Output {
         let evolution = self.evolution;
         let state = self.evolution.mul_vector(&other.state);
-        return Self { evolution, state };
+        Self { evolution, state }
     }
 }
 
@@ -506,5 +505,5 @@ where
     T: FromStr,
     <T as FromStr>::Err: Debug,
 {
-    return text.parse::<T>().unwrap();
+    text.parse::<T>().unwrap()
 }

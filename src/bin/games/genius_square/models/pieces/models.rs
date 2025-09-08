@@ -106,60 +106,60 @@ impl Piece {
                     })
                     .collect::<Vec<String>>()
                     .join("");
-                return format!("\u{2502} {line} \u{2502}");
+                format!("\u{2502} {line} \u{2502}")
             })
             .collect::<Vec<String>>()
             .join("\n");
         let text = format!("{top}\n{middle}\n{bot}");
-        return text;
+        text
     }
 
     #[allow(unused)]
     pub fn transform_hflip(&self, recentre: bool) -> Self {
         let kind = self.get_kind();
         let positions = self.positions.transform_hflip(recentre);
-        let result = Self { kind, positions };
-        return result;
+
+        Self { kind, positions }
     }
 
     #[allow(unused)]
     pub fn transform_vflip(&self, recentre: bool) -> Self {
         let kind = self.get_kind();
         let positions = self.positions.transform_vflip(recentre);
-        let result = Self { kind, positions };
-        return result;
+
+        Self { kind, positions }
     }
 
     #[allow(unused)]
     pub fn transform_transpose(&self, recentre: bool) -> Self {
         let kind = self.get_kind();
         let positions = self.positions.transform_transpose(recentre);
-        let result = Self { kind, positions };
-        return result;
+
+        Self { kind, positions }
     }
 
     #[allow(unused)]
     pub fn transform_rotate(&self, k: i8, recentre: bool) -> Self {
         let kind = self.get_kind();
         let positions = self.positions.transform_rotate(k, recentre);
-        let result = Self { kind, positions };
-        return result;
+
+        Self { kind, positions }
     }
 
     #[allow(unused)]
     pub fn transform_shift(&self, di: isize, dj: isize) -> Self {
         let kind = self.get_kind();
         let positions = self.positions.transform_shift(di, dj);
-        let result = Self { kind, positions };
-        return result;
+
+        Self { kind, positions }
     }
 
     #[allow(unused)]
     pub fn transform_dither(&self) -> Self {
         let kind = self.get_kind();
         let positions = self.positions.transform_dither();
-        let result = Self { kind, positions };
-        return result;
+
+        Self { kind, positions }
     }
 }
 
@@ -175,7 +175,7 @@ impl Add for Piece {
     fn add(self, other: Self) -> Self::Output {
         let kind = self.get_kind();
         let positions = self.get_positions().to_owned() + other.get_positions().to_owned();
-        return Self { kind, positions };
+        Self { kind, positions }
     }
 }
 
@@ -191,7 +191,7 @@ impl Mul for Piece {
     fn mul(self, other: Self) -> Self::Output {
         let kind = self.get_kind();
         let positions = self.get_positions().to_owned() * other.get_positions().to_owned();
-        return Self { kind, positions };
+        Self { kind, positions }
     }
 }
 

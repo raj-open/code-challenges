@@ -93,8 +93,8 @@ impl BinArray {
         let i_min: usize = *coords.iter().map(|(i, _)| i).min().unwrap_or(&0);
         let j_min: usize = *coords.iter().map(|(_, j)| j).min().unwrap_or(&0);
         // shift coords
-        let result = self.transform_shift(-(i_min as isize), -(j_min as isize));
-        return result;
+
+        self.transform_shift(-(i_min as isize), -(j_min as isize))
     }
 
     /// Flips 0s and 1s
@@ -108,7 +108,7 @@ impl BinArray {
                 0
             }
         });
-        return Self { m, n, values };
+        Self { m, n, values }
     }
 
     pub fn transform_shift(&self, di: isize, dj: isize) -> Self {
@@ -131,8 +131,8 @@ impl BinArray {
         let j0 = self.n;
         let j1 = self.n + j0;
         let values = slate.slice_mut(slice![i0..i1, j0..j1]).to_owned();
-        let result = Self { m, n, values };
-        return result;
+
+        Self { m, n, values }
     }
 
     pub fn transform_hflip(&self, recentre: bool) -> Self {
@@ -143,7 +143,7 @@ impl BinArray {
         if recentre {
             result = result.recentre();
         }
-        return result;
+        result
     }
 
     pub fn transform_vflip(&self, recentre: bool) -> Self {
@@ -154,7 +154,7 @@ impl BinArray {
         if recentre {
             result = result.recentre();
         }
-        return result;
+        result
     }
 
     pub fn transform_transpose(&self, recentre: bool) -> Self {
@@ -165,20 +165,14 @@ impl BinArray {
         if recentre {
             result = result.recentre();
         }
-        return result;
+        result
     }
 
     pub fn transform_rotate(&self, k: i8, recentre: bool) -> Self {
         match k {
-            1 => {
-                return self.transform_transpose(false).transform_vflip(recentre);
-            }
-            -1 => {
-                return self.transform_vflip(false).transform_transpose(recentre);
-            }
-            _ => {
-                return self.clone();
-            }
+            1 => self.transform_transpose(false).transform_vflip(recentre),
+            -1 => self.transform_vflip(false).transform_transpose(recentre),
+            _ => self.clone(),
         }
     }
 
@@ -194,8 +188,8 @@ impl BinArray {
         let arr4 = arr.transform_shift(0, 1);
         arr = arr + arr1 + arr2 + arr3 + arr4;
         let values = arr.values.slice(slice![1..-1, 1..-1]).to_owned();
-        let result = Self { m, n, values };
-        return result;
+
+        Self { m, n, values }
     }
 
     /// Determines all possible configurations
@@ -215,7 +209,7 @@ impl BinArray {
         let free = obst.transform_invert();
         let mut used: Vec<String> = vec![];
 
-        let iterator = iproduct!([0, 1, -1], [false, true], [false, true],)
+        iproduct!([0, 1, -1], [false, true], [false, true],)
             // iterate through all orientations
             .map(|(rot, vflip, hflip)| {
                 // recover original
@@ -233,14 +227,14 @@ impl BinArray {
                 if hflip | vflip | (rot != 0) {
                     arr = arr.recentre();
                 }
-                return arr;
+                arr
             })
             // skip duplicate orientations
             .filter(move |arr| {
                 let text = arr.to_string();
                 let dupl = used.contains(&text);
                 used.push(text);
-                return !dupl;
+                !dupl
             })
             // by fixing an anchor point and viewing the non-occupied positions
             // get all possible shifts of the array
@@ -250,32 +244,30 @@ impl BinArray {
                 let i0 = i0 as isize;
                 let j0 = j0 as isize;
                 // all non-occupied points on gameboard
-                let shifts = free
-                    .to_coords()
+
+                free.to_coords()
                     .iter()
                     .map(|&(i, j)| {
                         let di = (i as isize) - i0;
                         let dj = (j as isize) - j0;
-                        let arr_ = arr.transform_shift(di, dj);
-                        return arr_;
+
+                        arr.transform_shift(di, dj)
                     })
-                    .collect::<Vec<BinArray>>();
-                return shifts;
+                    .collect::<Vec<BinArray>>()
             })
             // since returned a vector of possibilities, need to flatten
             .flatten()
             // if geometric operations shift shape off the grid, skip
             .filter(|arr| {
                 let wt = self.get_weight();
-                return arr.get_weight() >= wt;
+                arr.get_weight() >= wt
             })
             // if geometric operations collide with obstacle, skip
             .filter(move |arr| {
                 let collision = arr.to_owned() * obst.to_owned();
                 let penalty = -collision.get_weight();
-                return penalty >= 0;
-            });
-        return iterator;
+                penalty >= 0
+            })
     }
 }
 
@@ -293,7 +285,7 @@ impl Add for BinArray {
         let n = self.n;
         let mut values = self.values.to_owned() + other.values.to_owned();
         values = values.mapv(|x| x.min(1));
-        return Self { m, n, values };
+        Self { m, n, values }
     }
 }
 
@@ -310,7 +302,7 @@ impl Mul for BinArray {
         let m = self.m;
         let n = self.n;
         let values = self.values.to_owned() * other.values.to_owned();
-        return Self { m, n, values };
+        Self { m, n, values }
     }
 }
 

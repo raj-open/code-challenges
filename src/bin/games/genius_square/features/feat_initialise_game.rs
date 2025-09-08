@@ -22,7 +22,7 @@ pub fn feature_initialise_game(
     // Roll the dice
     let mut faces = option_roll.unwrap_or_else(|| roll_dice(rng));
     faces.sort();
-    let dice: Vec<Die> = faces.iter().map(|face| Die::from_string(face)).collect();
+    let dice: Vec<Die> = faces.iter().map(Die::from_string).collect();
     println!("\nRoll: {}", faces.join(" "));
 
     // Establish the problem
@@ -31,5 +31,5 @@ pub fn feature_initialise_game(
     let board = GameBoard::new(&block);
     println!("\nProblem:\n{}", board.pretty());
 
-    return board;
+    board
 }

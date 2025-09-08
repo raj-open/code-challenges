@@ -26,7 +26,7 @@ fn main() {
     } else {
         None
     };
-    let option_seed = if args.len() >= 1 {
+    let option_seed = if !args.is_empty() {
         Some(args[args.len() - 1].clone())
     } else {
         None

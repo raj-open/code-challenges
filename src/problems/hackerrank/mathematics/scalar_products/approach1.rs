@@ -28,7 +28,7 @@ use std::str::FromStr;
 #[allow(unused)]
 fn main() {
     let lines = read_input(&io::stdin());
-    let line = lines.iter().nth(0).unwrap();
+    let line = lines.first().unwrap();
 
     let args: Vec<String> = line.split(" ").map(|x| x.to_string()).collect();
     let mut args: Iter<'_, String> = args.iter();
@@ -64,9 +64,8 @@ pub fn run(c: i32, m: i32, n: usize) -> usize {
             values.insert(ip);
         }
     }
-    let num_unique = values.len();
 
-    return num_unique;
+    values.len()
 }
 
 // ----------------------------------------------------------------
@@ -110,7 +109,7 @@ impl EntityIterable for SeqPair {
         let y = self.next;
         self.current = y;
         self.next = (x + y).rem_euclid(self.modulus);
-        return self;
+        self
     }
 }
 
@@ -125,7 +124,7 @@ where
         if self.index > 1 {
             self.entity.next_entity();
         }
-        return Some(self.entity.clone());
+        Some(self.entity.clone())
     }
 }
 
@@ -134,7 +133,7 @@ impl IntoIterator for SeqPair {
     type IntoIter = EntityIterator<SeqPair>;
 
     fn into_iter(self) -> Self::IntoIter {
-        return EntityIterator { index: 0, entity: self.clone() };
+        EntityIterator { index: 0, entity: self.clone() }
     }
 }
 
@@ -155,5 +154,5 @@ where
     T: FromStr,
     <T as FromStr>::Err: Debug,
 {
-    return text.parse::<T>().unwrap();
+    text.parse::<T>().unwrap()
 }

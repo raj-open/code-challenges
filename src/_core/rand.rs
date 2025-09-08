@@ -21,11 +21,9 @@ pub fn seed_rng(x: Option<String>) -> ChaCha8Rng {
             seed[..len].copy_from_slice(&seed_bytes[..len]);
 
             // create RNG
-            let rng = ChaCha8Rng::from_seed(seed);
-            return rng;
+
+            ChaCha8Rng::from_seed(seed)
         }
-        None => {
-            return ChaCha8Rng::from_os_rng();
-        }
+        None => ChaCha8Rng::from_os_rng(),
     }
 }

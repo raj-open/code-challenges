@@ -30,7 +30,7 @@ pub fn solve_brute_force(board: &GameBoard, with_parallelisation: bool) -> Recei
     spawn(move || {
         recursion(&tx, &board, None, None, with_parallelisation);
     });
-    return rx;
+    rx
 }
 
 // ----------------------------------------------------------------
@@ -51,7 +51,7 @@ fn recursion(
     let pbar: &ProgressBar;
     match option_pbar {
         Some(pbar_) => {
-            pbar = &pbar_;
+            pbar = pbar_;
         }
         None => {
             pbar = &pbar0;
@@ -77,7 +77,7 @@ fn recursion(
                 let piece = Piece::from_kind(kind, None);
                 let iterator = board.get_configurations(&piece);
                 let n = iterator.count();
-                return (kind, n);
+                (kind, n)
             })
             // sort by ascending values of size of possibilities
             .sorted_by_key(|&(_, n)| n as isize)
@@ -118,13 +118,13 @@ fn recursion_body(
     let mut board_ = board.clone();
 
     // update the solution
-    board_.add_piece(&kind.clone(), &piece);
+    board_.add_piece(&kind.clone(), piece);
 
     // update the obstacle
-    board_.update_obstacle(&piece);
+    board_.update_obstacle(piece);
 
     // compute remainder of solution recursively
-    recursion(tx, &board_, Some(kinds), Some(&pbar), with_parallelisation);
+    recursion(tx, &board_, Some(kinds), Some(pbar), with_parallelisation);
     let k = pbar.position();
-    pbar.set_position((k - 1).max(0));
+    pbar.set_position(k - 1);
 }

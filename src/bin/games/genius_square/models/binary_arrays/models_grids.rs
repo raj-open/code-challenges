@@ -124,7 +124,7 @@ impl Node {
             field[(2, 4)] = "\u{0253C}".to_string();
         }
 
-        return field;
+        field
     }
 }
 
@@ -157,7 +157,7 @@ impl BinGrid {
 
     pub fn from_coord(label: &String, i: usize, j: usize, m: usize, n: usize) -> Self {
         let object = BinArray::from_coords(vec![(i, j)], m, n);
-        return Self::from_array(label, &object);
+        Self::from_array(label, &object)
     }
 
     pub fn from_array(label: &String, object: &BinArray) -> Self {
@@ -210,7 +210,7 @@ impl BinGrid {
 
         result.clusters = vec![cluster];
 
-        return result;
+        result
     }
 
     pub fn get_node(&self, i: usize, j: usize) -> Node {
@@ -236,8 +236,8 @@ impl BinGrid {
                 bd.h.prev = bd_.h.prev;
             }
         }
-        let node = Node::new(label, &bd);
-        return node;
+
+        Node::new(label, &bd)
     }
 }
 
@@ -271,7 +271,7 @@ impl Display for BinGrid {
                     };
                     let mut view = field.slice_mut(slice![..m_, j0..j1]);
                     if k == 0 {
-                        view.assign(&field_);
+                        view.assign(field_);
                     } else {
                         view.assign(&field_.slice(slice![.., 1..]));
                     }
@@ -286,7 +286,7 @@ impl Display for BinGrid {
                     j0 = j1;
                 }
 
-                return field;
+                field
             })
             .collect();
 
@@ -307,7 +307,7 @@ impl Display for BinGrid {
             };
             let mut view = field.slice_mut(slice![i0..i1, ..n_]);
             if k == 0 {
-                view.assign(&field_);
+                view.assign(field_);
             } else {
                 view.assign(&field_.slice(slice![1.., ..]));
             }
@@ -340,6 +340,6 @@ impl Add for BinGrid {
     fn add(self, other: Self) -> Self::Output {
         let mut result = self.clone();
         result += other;
-        return result;
+        result
     }
 }

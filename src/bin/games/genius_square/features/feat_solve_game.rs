@@ -16,7 +16,7 @@ use super::constants::TIMEOUT;
 /// Feature to solve the problem
 pub fn feature_solve_game(board: &GameBoard) -> Option<GameBoard> {
     print!("\nCompute solution ... ");
-    let rx = solve_brute_force(&board, true);
+    let rx = solve_brute_force(board, true);
     let mut solution: Option<GameBoard> = None;
     let mut dt: Option<Duration> = None;
     let mut n = 0;
@@ -53,5 +53,5 @@ pub fn feature_solve_game(board: &GameBoard) -> Option<GameBoard> {
         }
     }
 
-    return solution;
+    solution
 }
