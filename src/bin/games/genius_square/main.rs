@@ -12,6 +12,7 @@ mod features;
 mod models;
 
 use models::constants::NUM_DICE;
+use features::feature_roll_dice;
 use features::feature_initialise_game;
 use features::feature_solve_game;
 
@@ -32,7 +33,9 @@ fn main() {
         None
     };
     let mut rng = _core::rand::seed_rng(option_seed);
+
     welcome_screen();
-    let board = feature_initialise_game(&mut rng, option_roll);
+    let dice = feature_roll_dice(&mut rng, option_roll);
+    let board = feature_initialise_game(&dice);
     feature_solve_game(&board);
 }
