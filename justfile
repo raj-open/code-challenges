@@ -283,12 +283,12 @@ watch-logs-all n="10":
 
 check-system:
     @echo "Operating System detected:  {{os_family()}}"
-    @echo "cargo +stable command:              $( cargo +stable --version )"
+    @echo "cargo command:              $( cargo +stable --version )"
     @echo "Rustc command:              $( rustc --version )"
     @echo "Python command used:        ${PYTHON_PATH}"
     @echo "Python command for venv:    {{PYVENV}}"
     @echo "Python path for venv:       $( {{PYVENV_ON}} && which {{PYVENV}} )"
-    @echo "cargo +stable Zigbuild:             $( cargo-zigbuild --version )"
+    @echo "cargo Zigbuild:             $( cargo-zigbuild --version )"
 
 check-system-requirements:
     @just _check-tool "cargo +stable" "cargo +stable"
