@@ -22,11 +22,13 @@ pub fn feature_solve_game(board: &GameBoard) -> Option<GameBoard> {
     let mut n = 0;
     let time = SystemTime::now();
 
-    while let Ok(board) = rx.recv_timeout(TIMEOUT) {
-        if n == 0 {
-            dt = Some(time.elapsed().unwrap());
-            solution = Some(board);
-        }
+    if let Ok(board) = rx.recv_timeout(TIMEOUT) {
+        dt = Some(time.elapsed().unwrap());
+        solution = Some(board);
+        n += 1;
+    }
+
+    while let Ok(_) = rx.recv_timeout(TIMEOUT) {
         n += 1;
     }
 
@@ -41,9 +43,9 @@ pub fn feature_solve_game(board: &GameBoard) -> Option<GameBoard> {
         // DEV-NOTE: use 'ref' to borrow
         Some(ref board) => {
             println!("found {n} solutions.");
-            println!("Time for 1st solution:      {dt:2?}");
-            println!("Average time per solution:  {dt_mean:2?}");
-            println!("Total time:                 {dt_total:2?}");
+            println!("Time for 1st solution:      {dt:.2?}");
+            println!("Average time per solution:  {dt_mean:.2?}");
+            println!("Total time:                 {dt_total:.2?}");
             println!("\nSolution 1:\n{}\n", board.pretty());
         }
         None => {
