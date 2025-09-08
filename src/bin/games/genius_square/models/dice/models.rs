@@ -3,9 +3,7 @@
 // ----------------------------------------------------------------
 
 use std::fmt::Debug;
-use std::fmt::Display;
-use std::fmt::Formatter;
-use std::fmt::Result;
+use std::string::ToString;
 
 use crate::models::constants::FACE1;
 use crate::models::constants::FACE2;
@@ -34,12 +32,6 @@ impl Die {
         Die { i: index2, j: index1 }
     }
 
-    pub fn to_string(&self) -> String {
-        let char1: String = FACE1[self.j].to_string();
-        let char2: String = FACE2[self.i].to_string();
-        format!("{char1}{char2}")
-    }
-
     #[allow(unused)]
     pub fn from_coords(i: usize, j: usize) -> Die {
         Die { i, j }
@@ -51,8 +43,10 @@ impl Die {
     }
 }
 
-impl Display for Die {
-    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
-        write!(f, "{}", self.to_string())
+impl ToString for Die {
+    fn to_string(&self) -> String {
+        let char1: String = FACE1[self.j].to_string();
+        let char2: String = FACE2[self.i].to_string();
+        format!("{char1}{char2}")
     }
 }

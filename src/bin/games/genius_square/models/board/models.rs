@@ -4,9 +4,7 @@
 
 use ndarray::Array2;
 use std::fmt::Debug;
-use std::fmt::Display;
-use std::fmt::Formatter;
-use std::fmt::Result;
+use std::string::ToString;
 use std::collections::HashMap;
 
 use general::_core::strings::join_multiline_strings;
@@ -99,12 +97,6 @@ impl GameBoard {
 
     pub fn get_obstacle_coweight(&self) -> isize {
         self.obstacle_basic.get_coweight()
-    }
-
-    pub fn to_string(&self) -> String {
-        let field = self.to_array_of_strings(false);
-
-        Self::array_to_string(&field)
     }
 
     #[allow(unused)]
@@ -230,8 +222,9 @@ impl GameBoard {
     }
 }
 
-impl Display for GameBoard {
-    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
-        write!(f, "{}", self.to_string())
+impl ToString for GameBoard {
+    fn to_string(&self) -> String {
+        let field = self.to_array_of_strings(false);
+        Self::array_to_string(&field)
     }
 }

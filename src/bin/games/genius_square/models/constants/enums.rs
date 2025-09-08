@@ -3,9 +3,7 @@
 // ----------------------------------------------------------------
 
 use std::fmt::Debug;
-use std::fmt::Display;
-use std::fmt::Formatter;
-use std::fmt::Result;
+use std::string::ToString;
 
 use crate::models::binary_arrays::BinArray;
 use super::board::*;
@@ -113,8 +111,8 @@ impl EnumPiece {
     }
 }
 
-impl Display for EnumPiece {
-    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
-        write!(f, "{}", self.to_formatted())
+impl ToString for EnumPiece {
+    fn to_string(&self) -> String {
+        self.to_formatted().to_string()
     }
 }

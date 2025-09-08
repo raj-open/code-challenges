@@ -3,13 +3,11 @@
 // ----------------------------------------------------------------
 
 use std::fmt::Debug;
-use std::fmt::Display;
-use std::fmt::Formatter;
-use std::fmt::Result;
 use std::ops::Add;
 use std::ops::AddAssign;
 use std::ops::Mul;
 use std::ops::MulAssign;
+use std::string::ToString;
 
 use crate::models::binary_arrays::BinArray;
 use crate::models::constants::EnumPiece;
@@ -84,36 +82,6 @@ impl Piece {
         self.positions.get_coweight()
     }
 
-    pub fn to_string(&self) -> String {
-        let n = GRID_WIDTH;
-        let hbar = "\u{2500}".repeat(n + 2);
-        let top = format!("\u{250C}{hbar}\u{2510}");
-        let bot = format!("\u{2514}{hbar}\u{2518}");
-        let middle = self
-            .positions
-            .get_values()
-            .rows()
-            .into_iter()
-            .map(|row| {
-                let line = row
-                    .iter()
-                    .map(|&val| {
-                        if val == 1 {
-                            "+".to_string()
-                        } else {
-                            ".".to_string()
-                        }
-                    })
-                    .collect::<Vec<String>>()
-                    .join("");
-                format!("\u{2502} {line} \u{2502}")
-            })
-            .collect::<Vec<String>>()
-            .join("\n");
-        let text = format!("{top}\n{middle}\n{bot}");
-        text
-    }
-
     #[allow(unused)]
     pub fn transform_hflip(&self, recentre: bool) -> Self {
         let kind = self.get_kind();
@@ -163,9 +131,35 @@ impl Piece {
     }
 }
 
-impl Display for Piece {
-    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
-        write!(f, "{}", self.to_string())
+impl ToString for Piece {
+    fn to_string(&self) -> String {
+        let n = GRID_WIDTH;
+        let hbar = "\u{2500}".repeat(n + 2);
+        let top = format!("\u{250C}{hbar}\u{2510}");
+        let bot = format!("\u{2514}{hbar}\u{2518}");
+        let middle = self
+            .positions
+            .get_values()
+            .rows()
+            .into_iter()
+            .map(|row| {
+                let line = row
+                    .iter()
+                    .map(|&val| {
+                        if val == 1 {
+                            "+".to_string()
+                        } else {
+                            ".".to_string()
+                        }
+                    })
+                    .collect::<Vec<String>>()
+                    .join("");
+                format!("\u{2502} {line} \u{2502}")
+            })
+            .collect::<Vec<String>>()
+            .join("\n");
+        let text = format!("{top}\n{middle}\n{bot}");
+        text
     }
 }
 

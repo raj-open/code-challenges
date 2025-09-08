@@ -6,11 +6,9 @@ use itertools::Itertools;
 use ndarray::Array2;
 use ndarray::s as slice;
 use std::fmt::Debug;
-use std::fmt::Display;
-use std::fmt::Formatter;
-use std::fmt::Result;
 use std::ops::Add;
 use std::ops::AddAssign;
+use std::string::ToString;
 
 use super::models_arrays::BinArray;
 
@@ -241,8 +239,8 @@ impl BinGrid {
     }
 }
 
-impl Display for BinGrid {
-    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
+impl ToString for BinGrid {
+    fn to_string(&self) -> String {
         let (m, n) = self.get_shape();
 
         // compute fields of characters
@@ -323,8 +321,8 @@ impl Display for BinGrid {
         }
 
         // finally, join field chars:
-        let text = field.rows().into_iter().map(|row| row.iter().join("")).join("\n");
-        write!(f, "{}", text)
+
+        field.rows().into_iter().map(|row| row.iter().join("")).join("\n")
     }
 }
 

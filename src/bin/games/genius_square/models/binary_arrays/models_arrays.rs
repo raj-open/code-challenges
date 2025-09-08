@@ -5,9 +5,7 @@
 use ndarray::Array2;
 use ndarray::s as slice;
 use std::fmt::Debug;
-use std::fmt::Display;
-use std::fmt::Formatter;
-use std::fmt::Result;
+use std::string::ToString;
 use std::ops::Add;
 use std::ops::AddAssign;
 use std::ops::Mul;
@@ -271,9 +269,9 @@ impl BinArray {
     }
 }
 
-impl Display for BinArray {
-    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
-        write!(f, "{}", self.values)
+impl ToString for BinArray {
+    fn to_string(&self) -> String {
+        format!("{}", self.values)
     }
 }
 
