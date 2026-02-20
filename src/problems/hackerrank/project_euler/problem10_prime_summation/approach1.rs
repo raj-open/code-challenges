@@ -71,8 +71,8 @@ fn compute_aggregates(numbers: &Vec<i64>, primes: &Vec<i64>) -> HashMap<i64, i64
     let mut sums = HashMap::<i64, i64>::new();
     let mut sum: i64 = 0;
     for n in numbers_sorted {
-        sum += values.iter().filter(|&&p| (p <= n)).sum::<i64>();
-        values = values.iter().filter(|&&p| (p > n)).cloned().collect();
+        sum += values.iter().filter(|&&p| p <= n).sum::<i64>();
+        values = values.iter().filter(|&&p| p > n).cloned().collect();
         sums.insert(n, sum);
     }
     return sums;
