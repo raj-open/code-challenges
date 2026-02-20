@@ -106,34 +106,18 @@ setup:
     @rustup override set stable
 
 build:
-    @just build-venv
-    @just build-requirements
+    @just build-rust
+    @# just build-py
+
+# ---- BUILD TARGETS FOR RUST ----
+
+build-rust:
+    @just build-requirements-rust
     @just check-system-requirements
     @just build-compile
 
-build-venv:
-    @echo "create venv if not exists"
-    @- ${PYTHON_PATH} -m venv .venv 2> /dev/null
-
-build-requirements:
-    @just build-requirements-basic
-    @just build-requirements-dependencies
-
-build-requirements-basic:
-    @cargo +stable update --verbose
-    @cargo +stable install --locked --force cargo-zigbuild
-    @# cargo +stable install --locked --force rustfmt
-    @{{PYVENV_ON}} && {{PYVENV}} -m pip install --upgrade pip
-    @{{PYVENV_ON}} && {{PYVENV}} -m pip install ruff uv
-
-build-requirements-dependencies:
-    @{{PYVENV_ON}} && {{PYVENV}} -m uv pip install \
-        --exact \
-        --strict \
-        --compile-bytecode \
-        --no-python-downloads \
-        --requirements pyproject.toml
-    @{{PYVENV_ON}} && {{PYVENV}} -m uv sync
+build-requirements-rust:
+    @cargo +stable install --locked cargo-zigbuild
 
 build-compile module="${MAIN_MODULE}":
     @rustup override set stable
@@ -141,6 +125,34 @@ build-compile module="${MAIN_MODULE}":
     @- rm "dist/{{module}}" 2> /dev/null
     @cargo +stable zigbuild --target-dir "target" --release --bin "{{module}}"
     @cp "target/release/{{module}}" dist
+
+# ---- BUILD TARGETS FOR PYTHON ----
+
+build-python:
+    @just build-venv
+    @just build-requirements-basic-py
+    @just build-requirements-dependencies-py
+    @just check-system-requirements
+
+build-venv:
+    @echo "create venv if not exists"
+    @- ${PYTHON_PATH} -m venv .venv 2> /dev/null
+
+build-requirements-basic-py:
+    @{{PYVENV_ON}} && {{PYVENV}} -m pip install --upgrade pip
+    @{{PYVENV_ON}} && {{PYVENV}} -m pip install ruff uv
+
+build-requirements-dependencies-py:
+    @{{PYVENV_ON}} && {{PYVENV}} -m uv sync \
+        --exact \
+        --strict \
+        --no-default-groups \
+        --only-group "base" \
+        --only-group "dev" \
+        --compile-bytecode \
+        --no-managed-python \
+        --no-python-downloads \
+        --requirements pyproject.toml
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # TARGETS: execution
